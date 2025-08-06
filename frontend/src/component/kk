@@ -1,0 +1,19 @@
+//   const featuredProducts = [  
+//     { id: 1, name: 'Wireless Headphones', price: 99.99, image: 'https://via.placeholder.com/300', rating: 4.5 },
+//     { id: 2, name: 'Smart Watch', price: 199.99, image: 'https://via.placeholder.com/300', rating: 4.2 },
+//     { id: 3, name: 'Bluetooth Speaker', price: 79.99, image: 'https://via.placeholder.com/300', rating: 4.7 },
+//     { id: 3, name: 'Bluetooth Speaker', price: 79.99, image: 'https://via.placeholder.com/300', rating: 4.7 },
+//     { id: 3, name: 'Bluetooth Speaker', price: 79.99, image: 'https://via.placeholder.com/300', rating: 4.7 },
+//   ];
+
+//   const bestSellers = [
+//     { id: 1, name: 'Gaming Laptop', price: 1299.99, image: 'https://via.placeholder.com/300', sold: 142 },
+//     { id: 2, name: '4K Smart TV', price: 799.99, image: 'https://via.placeholder.com/300', sold: 98 },
+//     { id: 3, name: 'Smartphone Pro', price: 699.99, image: 'https://via.placeholder.com/300', sold: 215 },
+//     { id: 1, name: 'Gaming Laptop', price: 1299.99, image: 'https://via.placeholder.com/300', sold: 142 },
+//     { id: 2, name: '4K Smart TV', price: 799.99, image: 'https://via.placeholder.com/300', sold: 98 },
+//     { id: 3, name: 'Smartphone Pro', price: 699.99, image: 'https://via.placeholder.com/300', sold: 215 },
+//   ];
+  
+ 
+// const [visibleBestseller,sett]
