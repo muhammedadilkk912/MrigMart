@@ -1,4 +1,3 @@
-// axiosInstance.js
 import axios from "axios";
  import store from "../Redux/Store"; // adjust path to your actual store
 import { setLogout } from "../Redux/AuthSlic";
