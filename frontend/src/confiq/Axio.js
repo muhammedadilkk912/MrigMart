@@ -1,6 +1,6 @@
 // axiosInstance.js
 import axios from "axios";
- import Store from "../Redux/Store"; // adjust path to your actual store
+ import store from "../Redux/store"; // adjust path to your actual store
 import { setLogout } from "../Redux/AuthSlic";
 
 const axiosInstance = axios.create({
@@ -14,7 +14,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       console.log("axiosinterceptor=",error)
-      Store.dispatch(setLogout());
+      store.dispatch(setLogout());
       window.location.href = "/token-expired"; // Works outside React
     }
     return Promise.reject(error);
