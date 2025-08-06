@@ -1,5 +1,5 @@
 import Layout from "../component/Layout";
-import HeroBanner from "../component/Herobanner";
+import HeroBanner from "../component/HeroBanner";
 import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import axiosInstance from "../confiq/Axio";
