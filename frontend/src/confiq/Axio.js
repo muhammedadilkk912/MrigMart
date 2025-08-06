@@ -1,6 +1,6 @@
 import axios from "axios";
- import store from "../Redux/store"; // adjust path to your actual store
-import { setLogout } from "../Redux/AuthSlic";
+ import store from "../Redux/store.js"; // adjust path to your actual store
+import { setLogout } from "../Redux/AuthSlic.js";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:4500/api",
