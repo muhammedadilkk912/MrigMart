@@ -3,7 +3,8 @@ import axios from "axios";
 import { setLogout } from "../Redux/AuthSlic.js";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4500/api",
+  // baseURL: "http://localhost:4500/api",
+  baseURL:"https://mrigmart-backend.onrender.com/api",
   withCredentials: true,
 });
 
