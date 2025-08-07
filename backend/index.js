@@ -35,7 +35,7 @@ app.use('/api/user',userRoutes)
 
 
 
-const port=process.env.port || '999'
+const port=process.env.PORT || '999'
 app.listen(port,()=>{
     console.log(`the server running at ${port}`)
 })

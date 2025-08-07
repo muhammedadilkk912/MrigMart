@@ -2,11 +2,16 @@ import axios from "axios";
  import store from "../Redux/store.js"; // adjust path to your actual store
 import { setLogout } from "../Redux/AuthSlic.js";
 
+// This reads the base URL from your .env file
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+console.log(baseURL)
+
 const axiosInstance = axios.create({
-  // baseURL: "http://localhost:4500/api",
-  baseURL:"https://mrigmart-backend.onrender.com/api",
+  baseURL,
   withCredentials: true,
 });
+ // : "http://localhost:4500/api",
+  // baseURL:"https://mrigmart-backend.onrender.com/api",
 
 // Response Interceptor for catching 401 errors
 axiosInstance.interceptors.response.use(
