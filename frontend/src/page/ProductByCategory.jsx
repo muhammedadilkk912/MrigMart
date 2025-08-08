@@ -199,7 +199,7 @@ useEffect(() => {
             <div className="hidden md:block w-64 flex-shrink-0">
               {
                 !maxprice?(
-                 <span>Loading..</span>
+                 <span></span>
 
                 ):(
                    <FilterSidebar

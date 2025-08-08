@@ -80,19 +80,20 @@ const [searchText, setSearchText] = useState('');
   const handlelogout=(val)=>{
     toggleDropdown()
     console.log("val=",val)
+    // navigate('/')
     
     if(val){
       console.log("inside the val",newlocation,val)
       if(!newlocation){
-        setLogout(false)
-        console.log("inside the if")
+        navigate('/')
       }else{
         console.log("inside the else")
-          navigate('/')
+          // navigate('/')
+          setLogout(false)
       }
        
     }else{
-        setLogout(val)
+        setLogout(false)
     }
     
     

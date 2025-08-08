@@ -25,10 +25,16 @@ const Alert = ({
     try {
        setLoading(true)
        const response=await axiosInstance.post('/user/logout')
-       dispatch(setLogout(false))
-       onConfirm(true)
+       console.log(response)
        toast.success(response?.data?.message)
-      onConfirm(true)
+       setTimeout(() => {
+         dispatch(setLogout(false))
+       }, 200);
+      
+       onConfirm(true)
+       
+      //  naviagate('/')
+      // onConfirm(true)
       // console.log(response)
     } catch (error) {
       console.log("error in logout ",error);
