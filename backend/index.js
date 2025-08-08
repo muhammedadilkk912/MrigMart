@@ -16,9 +16,9 @@ dotenv.config()
 const app=express()
 console.log("secret key=",process.env.STRIPE_SECRET_KEY)
 app.use(cors({  
-    // origin: 'http://localhost:5173',
+    //  origin: 'http://localhost:5173',
     origin:'https://mrig-mart-iuk2.vercel.app',
-    credentials: true // ✅ Important for cookies/sessions
+    credentials: true // ✅ Important for cookies/sessions  
 }));
 app.use(passport.initialize())
 connectDb()

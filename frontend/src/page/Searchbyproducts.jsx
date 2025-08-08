@@ -49,6 +49,7 @@ const Searchbyproducts = () => {
     
     if (query) params.push(`search=${query}`);
     if (max !== null) params.push(`max=${max}`);
+    
     if (filters.ratings) params.push(`ratings=${filters.ratings}`);
     params.push(`min=${min}`);
     params.push(`sortBy=${filters.sortBy}`);

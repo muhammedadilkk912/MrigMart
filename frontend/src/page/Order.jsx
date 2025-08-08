@@ -26,6 +26,7 @@ const Order = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const fetchOrders = async () => {
       try {
         dispatch(showLoading());

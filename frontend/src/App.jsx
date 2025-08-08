@@ -21,6 +21,7 @@ import Order from "./page/Order";
 import Check_Out from "./page/check_Out";
 import Account from "./page/Account";
 import {ToastContainer} from 'react-toastify'
+import ScrollToTop from "./component/ScrollTop";
 
 const App = () => {
   const loading = useSelector((state) => state.loading.isLoading);
@@ -55,18 +56,21 @@ const App = () => {
       )}
       <Toaster />
       <ToastContainer position='top-center'/>
+      <ScrollToTop/>
 
       {/* App Routes */}
       <Routes>
         <Route path="/token-expired" element={<TokenExpired/>} />
+        
+       
+        <Route path="/login" element={!isAuthenticate ? <Login /> : <Navigate to='/'/>} />
+        <Route path="/signup" element={!isAuthenticate ? <SignUp /> : <Navigate to='/'/>} />
+
+        
         <Route path="/" element={<HomePage />} />
         <Route path="/category_product/:id" element={<ProductByCategory />} />
         <Route path="/product/:id" element={<Productpage />} />
         <Route path="/searchproducts" element={<Searchbyproducts/>} />
-       
-        <Route path="/login" element={!isAuthenticate ? <Login /> : <Navigate to='/'/>} />
-        <Route path="/signup" element={!isAuthenticate ? <SignUp /> : <Navigate to='/'/>} />
-        
          <Route path="/cart" element={isAuthenticate ?<CartPage /> : <Navigate to='/login'/> } />
         <Route path="/wishlist" element={isAuthenticate ?<Wishlist/> :<Navigate to='/login'/>} />
         <Route path="/checkout" element={isAuthenticate ? <Checkoutpage/> : <Navigate to='/login'/>} />
@@ -74,7 +78,6 @@ const App = () => {
         <Route path="/orders" element={<Order/>} />
         <Route path="/direct_checkout/:id"  element={<Check_Out/>}  />
         <Route path='/account' element={<Account/>}/>
-        
       </Routes>
     </div>
   );

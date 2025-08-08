@@ -6,7 +6,7 @@ import { MdOutlineStar } from "react-icons/md";
 import {toast} from 'react-hot-toast'
 import axiosInstance from '../confiq/Axio';
 const ProductCard = ({ product }) => {
-   console.log(product)
+   console.log(product.averageRating)    
   const navigate=useNavigate()
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -79,10 +79,10 @@ const ProductCard = ({ product }) => {
         </button>
          </div>
          {
-         
-          product.averateRating &&(
+        //  averageRating
+          product.averageRating &&(
               <div className="flex items-center  bg-green-500 text-white px-2 py-0.5 rounded-md space-x-1 w-fit">
-  <span className="text-xs font-medium">{product.averateRating || "N/A"}</span>
+  <span className="text-xs font-medium">{product.averageRating || "N/A"}</span>
   <MdOutlineStar className="text-sm" />
 </div>
           )

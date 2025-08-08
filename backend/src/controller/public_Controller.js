@@ -165,7 +165,7 @@ const similiarProduct=async(req,res)=>{
   }
   ,{
     $addFields:{
-      averateRating:{$avg:"$review.rating"}
+      averageRating:{$avg:"$review.rating"}
     }
   },{
     $limit:5
@@ -244,6 +244,7 @@ if(Array.isArray(rating)&& rating.length>0){
   })
 
 }
+console.log(ratings,rating,pipline)
 
 
  pipline.push({ $sort: sortQuery });
@@ -301,14 +302,24 @@ if (inStock === "true") {
   matchConditions.stock = { $gt: 0 };
 }
 
+if(ratings){
+  let rating=ratings.split(',').map(Number)
+  console.log("inside the array",rating)
+  matchConditions.roundedRating={
+    $in:rating
+  }
+
+}
+
 
 
 if (min && max) {
   matchConditions.discountprice = {
-    $gte: Number(min),
+    $gte: Number(min),   
     $lte: Number(max),
   };
 }
+console.log(matchConditions)
 
  const pipeline = [
     {
@@ -330,10 +341,11 @@ if (min && max) {
     },
     {
       $addFields: {
-        averateRating: { $avg: "$reviews.rating" },
+        averageRating: { $avg: "$reviews.rating" },
         roundedRating: { $floor: { $avg: "$reviews.rating" } },
       }
     },
+    
     ...(Object.keys(matchConditions).length > 0 ? [{ $match: matchConditions }] : []),
     {
       $facet: {
@@ -342,12 +354,14 @@ if (min && max) {
           { $skip: skip },
           { $limit: limit }
         ],
-        totalCount: [
+        totalCount: [    
           { $count: "count" }
         ]
       }
        }
   ];
+  console.log("pipline=",pipeline)
+  
 
 
 

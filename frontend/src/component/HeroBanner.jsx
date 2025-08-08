@@ -57,7 +57,7 @@ const HeroBanner = () => {
                   <img
                     src={banner?.image || "/banner.jpg"}
                     alt={`Banner ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full rounded-md object-cover"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
@@ -83,12 +83,12 @@ const HeroBanner = () => {
                       >
                         Shop Now
                       </a>
-                      <button 
+                      {/* <button 
                         className="bg-transparent border-2 border-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-bold hover:bg-white hover:text-blue-600 transition duration-300 text-sm sm:text-base"
                         onClick={() => setIsAutoPlaying(!isAutoPlaying)}
                       >
                         {isAutoPlaying ? 'Pause' : 'Play'}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -125,10 +125,10 @@ const HeroBanner = () => {
               setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
               setIsAutoPlaying(false);
             }}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-100 text-white p-1 sm:p-2 rounded-full z-10 transition-all"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/50 bg-opacity-30 hover:bg-opacity-100 text-gray-700 p-1 sm:p-4 rounded-full z-10 transition-all"
             aria-label="Previous slide"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -137,10 +137,10 @@ const HeroBanner = () => {
               setCurrentSlide((prev) => (prev + 1) % banners.length);
               setIsAutoPlaying(false);
             }}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-100 text-white p-1 sm:p-2 rounded-full z-10 transition-all"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/50  bg-opacity-30 hover:bg-opacity-100 text-gray-700 p-1 sm:p-4 rounded-full z-10 transition-all"
             aria-label="Next slide"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

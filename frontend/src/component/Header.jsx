@@ -3,6 +3,10 @@ import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX } from 'react-icons/fi';
 import Alert from './alert';
 import { useSelector,useDispatch } from 'react-redux';
+import { RiUser3Line } from "react-icons/ri";
+import { BsThreeDotsVertical } from "react-icons/bs";
+
+
 import {setSearch} from '../Redux/SearchSlic'
 
 
@@ -16,7 +20,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [search,setSearch]=useState('')
+const [searchText, setSearchText] = useState('');
   const location = useLocation();
   const [logout,setLogout]=useState(false)
   const navigate=useNavigate()
@@ -51,8 +55,11 @@ const Header = () => {
 
   const handleSearch=(e)=>{
     // console.log("inside th e handle search",search)
-   e.preventDefault()
-   if(!search.trim()) return
+  //  e.preventDefault()
+   const trimmed = searchText.trim(); // remove spaces
+   if (!trimmed) return;
+     setIsMenuOpen(false);
+  setIsSearchOpen(false);
 
   //  const loca= location.pathname
   //  console.log("new search=",q)
@@ -62,7 +69,7 @@ const Header = () => {
   //  let check= geturl()
   //  if(!check) return
    console.log("inside")
-   navigate(`/searchproducts?q=${encodeURIComponent(search)}`)
+   navigate(`/searchproducts?q=${encodeURIComponent(searchText)}`)
   }
 
 
@@ -91,6 +98,11 @@ const Header = () => {
     
 
   }
+  const handleKeyDown=(e)=>{
+    if (e.key === 'Enter') {
+    handleSearch();
+  }
+  }
 
   return (
    
@@ -108,9 +120,25 @@ const Header = () => {
             <button onClick={toggleSearch} className="text-gray-600">
               {isSearchOpen ? <FiX size={20} /> : <FiSearch size={20} />}
             </button>
-            <button onClick={toggleMenu} className="text-gray-600">
+            {
+              !isauthenticate ? (
+                <button
+                onClick={()=>navigate('/login')}
+                className='flex rounded-md items-center font-medium shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out dark:from-gray-800
+                 dark:to-gray-900 text-sm px-1 py-1 gap-1 justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
+                >
+                  <RiUser3Line className="text-sm" />
+                  Login
+
+                </button>
+              ):(
+                 <button onClick={toggleMenu} className="text-gray-600">
               {isMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
             </button>
+
+              )
+            }
+           
           </div>
         </div>
 
@@ -120,9 +148,10 @@ const Header = () => {
             <div className="relative">
               <input
                 type="text"
-                value={search}
+                value={searchText}
                 placeholder="Search products..."
-                onChange={(e)=>setSearch(e.target.value)}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={handleKeyDown}
                
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -150,7 +179,9 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                 onChange={(e)=>setSearch(e.target.value)}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button onClick={handleSearch} className="absolute right-3 top-2.5 text-gray-500">
@@ -194,12 +225,26 @@ const Header = () => {
             </NavLink>
 
             {/* Dropdown */}
-            <div className="relative">
+            {
+              !isauthenticate ? (
+                <button 
+                onClick={()=>
+                  navigate('/login')
+
+                }
+                className="flex items-center gap-2 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out dark:from-gray-800 dark:to-gray-900">
+  <span>Login</span>
+  <RiUser3Line className="text-lg" />
+</button>
+
+              ):(
+                <div className="relative">
               <button 
                 onClick={toggleDropdown}
+                
                 className="text-gray-700 hover:text-blue-600 focus:outline-none"
               >
-                <FiUser size={20} />
+                <BsThreeDotsVertical  size={20} />
               </button>
               
               {isDropdownOpen && (
@@ -226,8 +271,7 @@ const Header = () => {
                     Wishlist
                   </NavLink>
                   <div className="border-t border-gray-200"></div>
-                  {
-                    isauthenticate?(
+                  
                       <button 
                    
                     className=" w-full text-left px-4    py-2 text-red-500 hover:bg-gray-100"
@@ -239,20 +283,16 @@ const Header = () => {
                     Logout
                   </button>
 
-                    ):(
-                      <NavLink
-                      to='/login'
-                   
-                    className=" block  px-4    py-2 text-gray-700 hover:bg-gray-100"
-                     >
-                    Login
-                  </NavLink>
-                    )
-                  }
+                    
+                     
                   
                 </div>
               )}
             </div>
+
+              )
+            }
+            
           </div>
         </div>
 
@@ -277,7 +317,7 @@ const Header = () => {
                   `px-3 py-2 flex items-center ${isActive ? 'text-blue-600 font-medium' : 'text-gray-700'}`
                 }
               >
-                <FiShoppingCart size={18} className="mr-2" />
+                {/* <FiShoppingCart size={18} className="mr-2" /> */}
                 Cart
               </NavLink>
               
@@ -290,19 +330,8 @@ const Header = () => {
               >
                 Become Seller
               </NavLink>
-
-              {/* Mobile Dropdown */}
-              <div className="px-3 py-2">
-                <button 
-                  onClick={toggleDropdown}
-                  className="flex items-center text-gray-700 w-full"
-                >
-                  <FiUser size={18} className="mr-2" />
-                  My Account
-                </button>
-                
-                {isDropdownOpen && (
-                  <div className="mt-2 ml-6 bg-gray-50 rounded-md py-1">
+              
+              {/* <div className="mt-2 ml-6 bg-gray-50 rounded-md py-1"> */}
                     <NavLink 
                       to="/account" 
                       className="block px-3 py-2 text-gray-700 hover:bg-gray-100"
@@ -340,7 +369,7 @@ const Header = () => {
                    
                     className=" w-full text-left px-4    py-2 text-red-500 hover:bg-gray-100"
                     onClick={()=>{
-                      toggleDropdown(),
+                      setIsMenuOpen(false),
                       setLogout(true)
                     }}
                   >
@@ -357,9 +386,23 @@ const Header = () => {
                   </NavLink>
                     )
                   }
-                  </div>
-                )}
-              </div>
+                  {/* </div> */}
+              
+
+              {/* Mobile Dropdown */}
+              {/* <div className="px-3 py-2">
+                <button 
+                  onClick={toggleDropdown}
+                  className="flex items-center text-gray-700 w-full"
+                >
+                  <FiUser size={18} className="mr-2" />
+                  My Account
+                </button> */}
+                
+                {/* {isDropdownOpen && ( */}
+                  
+                {/* )} */}
+              {/* </div> */}
             </nav>
           </div>
         )}
