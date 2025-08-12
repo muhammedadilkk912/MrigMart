@@ -4,7 +4,7 @@ import { setLogout } from "../Redux/AuthSlic.js";
 
 // This reads the base URL from your .env file
 const baseURL = import.meta.env.VITE_API_BASE_URL;
-console.log(baseURL)
+console.log("base url",baseURL)
 
 const axiosInstance = axios.create({
   baseURL,

@@ -21,7 +21,7 @@ app.use(cors({
     credentials: true // ✅ Important for cookies/sessions  
 }));
 app.use(passport.initialize())
-connectDb()
+connectDb() 
 app.use(cookieParser());
 app.use('/webhook',express.raw({type:'application/json'}),webhookHandler)
 
