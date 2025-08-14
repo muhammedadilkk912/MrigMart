@@ -34,11 +34,14 @@ router.get(
             expiresIn: "5h",
         });
 
-        // Set the JWT in a cookie
+      
+        // Set the JWT in a cookie 
         res.cookie("token", token, {
-            httpOnly: true, 
-             secure: false,     //process.env.NODE_ENV === "production", // Ensure cookies are only sent over HTTPS in production
-            maxAge: 5 * 60 * 60 * 1000, // 5 hour
+          httpOnly: true,
+
+          secure: process.env.NOD_ENV==='production', // Required for SameSite=None
+          sameSite:process.env.NOD_ENV==='production'? "none":'', // Allows cross-site cookie
+          maxAge: 5 * 60 * 60 * 1000, // 5 hour
         });
 
         // Redirect to a protected route
