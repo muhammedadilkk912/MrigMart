@@ -216,14 +216,15 @@ const [searchText, setSearchText] = useState('');
               Cart
             </NavLink>
             
-            <NavLink 
-              to="/become-seller" 
+            <a 
+              href='https://mrig-mart-seller.vercel.app/'
+              target='_blank'
               className={({ isActive }) => 
                 `text-gray-700 hover:text-blue-600 ${isActive ? 'text-blue-600' : ''}`
               }
             >
               Become Seller
-            </NavLink>
+            </a>
 
             {/* Dropdown */}
             {
@@ -322,15 +323,15 @@ const [searchText, setSearchText] = useState('');
                 Cart
               </NavLink>
               
-              <NavLink 
-                to="/become-seller" 
-                onClick={toggleMenu}
+              <a 
+              href='https://mrig-mart-seller.vercel.app/'
+              target='_blank'
                 className={({ isActive }) => 
                   `px-3 py-2 ${isActive ? 'text-blue-600 font-medium' : 'text-gray-700'}`
                 }
               >
                 Become Seller
-              </NavLink>
+              </a>
               
               {/* <div className="mt-2 ml-6 bg-gray-50 rounded-md py-1"> */}
                     <NavLink 

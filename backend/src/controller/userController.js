@@ -448,8 +448,8 @@ const logout=async(req,res)=>{
 
     res.clearCookie("token", {
     httpOnly: true,
-    secure: true, // must match cookie options from login
-    sameSite: "strict", // must match
+   secure: process.env.NOD_ENV==='production', // Required for SameSite=None
+   sameSite:process.env.NOD_ENV==='production'? "none":'lax',
     path: "/", // must match
   });
   res.status(200).json({message:'logout successfull'})

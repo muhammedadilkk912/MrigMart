@@ -128,8 +128,8 @@ const signin=async(req,res)=>{
         res.cookie("token", token, {
           httpOnly: true,
 
-          secure: true, // Required for SameSite=None
-          sameSite: "None", // Allows cross-site cookie
+          secure: process.env.NOD_ENV==='production', // Required for SameSite=None
+          sameSite:process.env.NOD_ENV==='production'? "none":'lax', // Allows cross-site cookie
           maxAge: 5 * 60 * 60 * 1000, // 5 hour
         });
         res.status(200).json({message:'login successfull'})
