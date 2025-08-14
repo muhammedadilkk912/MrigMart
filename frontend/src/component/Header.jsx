@@ -77,22 +77,31 @@ const [searchText, setSearchText] = useState('');
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
+
   const handlelogout=(val)=>{
-    toggleDropdown()
-    console.log("val=",val)
+    // toggleDropdown()
+    // console.log("val=",val)
+    // console.log("url=",path)
+    let allowedUrl=['category_product','product']
+    const cleanPath = path.split('/')
+    // console.log("clean path=",cleanPath)
+
+    
     // navigate('/')
+   
     
     if(val){
-      console.log("inside the val",newlocation,val)
-      if(!newlocation){
-        navigate('/')
-      }else{
-        console.log("inside the else")
-          // navigate('/')
-          setLogout(false)
-      }
+      
+
+     if(path === '/' || allowedUrl.includes(cleanPath[1])){
+      setLogout(false)
+    }else{
+      navigate('/')
+      setLogout(false)
+    }
        
     }else{
+      console.log("elese")
         setLogout(false)
     }
     
@@ -205,6 +214,7 @@ const [searchText, setSearchText] = useState('');
             >
               Home
             </NavLink>
+            
             
             <NavLink 
               to="/cart" 

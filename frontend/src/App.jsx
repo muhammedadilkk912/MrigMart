@@ -22,6 +22,7 @@ import Check_Out from "./page/check_Out";
 import Account from "./page/Account";
 import {ToastContainer} from 'react-toastify'
 import ScrollToTop from "./component/ScrollTop";
+import Forgetpass from "./page/Forgetpas";
 
 const App = () => {
   const loading = useSelector((state) => state.loading.isLoading);
@@ -65,6 +66,8 @@ const App = () => {
        
         <Route path="/login" element={!isAuthenticate ? <Login /> : <Navigate to='/'/>} />
         <Route path="/signup" element={!isAuthenticate ? <SignUp /> : <Navigate to='/'/>} />
+        <Route path="/forgetpasssword" element={<Forgetpass/>}/>
+        
 
         
         <Route path="/" element={<HomePage />} />

@@ -76,7 +76,9 @@ const HeroBanner = () => {
                     <p className="text-sm sm:text-base md:text-xl mb-4 sm:mb-8 drop-shadow-lg max-w-md sm:max-w-2xl mx-auto">
                       {banner.subtitle?.subtitle || "Summer"}
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
+                    {
+                     banner && banner?.link &&(
+                         <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                       <a
                         href={banner?.link?.link || "#"}
                         className="bg-white text-blue-600 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-bold hover:bg-gray-100 transition duration-300 text-sm sm:text-base"
@@ -90,6 +92,10 @@ const HeroBanner = () => {
                         {isAutoPlaying ? 'Pause' : 'Play'}
                       </button> */}
                     </div>
+
+                      )
+                    }
+                   
                   </div>
                 </div>
               </div>

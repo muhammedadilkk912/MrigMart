@@ -1,5 +1,5 @@
 import express from "express";
-import {signup,verifyOtp,resendotp,signin,checkauth} from '../controller/authController.js'
+import {signup,verifyOtp,resendotp,signin,checkauth,forgetpassword,resetPassword} from '../controller/authController.js'
 import passport from 'passport'
 import JWT from 'jsonwebtoken'
 
@@ -11,6 +11,9 @@ const router=express.Router()
  router.post('/resendotp',resendotp)  
  router.post('/signin',signin)
  router.get('/checkauth',checkauth)
+ router.post('/forget-password',forgetpassword)
+ router.put('/resetpassword/:email',resetPassword)
+
 
 
 // Start Google OAuth flow
@@ -19,8 +22,8 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 
 
 
-// Google OAuth callback
-router.get(
+// Google OAuth callback 
+router.get(  
     "/google/callback",
     passport.authenticate("google", { failureRedirect: "/login",session:false }),
     (req, res) => {
@@ -39,7 +42,7 @@ router.get(
         });
 
         // Redirect to a protected route
-        res.redirect("http://localhost:5173/");
+        res.redirect(process.env.Base_Origin);
     }
 );
 

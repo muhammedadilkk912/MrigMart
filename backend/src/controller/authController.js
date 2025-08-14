@@ -81,6 +81,7 @@ const verifyOtp=async(req,res)=>{
     if(!user){
         return  res.status(400).json({message:"invalid  user"})
     }
+    console.log(user)
     if(new Date() > user.otpExpires){
         return res.status(400).json({ message: "Invalid or expired OTP" });
 
@@ -122,14 +123,14 @@ const signin=async(req,res)=>{
         //send data to the fronted
        const token=jwt.sign({ id:user._id,role:user.role }, process.env.JWT_SECRET, {
             expiresIn: "5h",
-        });
-       
-        // Set the JWT in a cookie
+        }); 
+        
+        // Set the JWT in a cookie 
         res.cookie("token", token, {
           httpOnly: true,
 
           secure: process.env.NOD_ENV==='production', // Required for SameSite=None
-          sameSite:process.env.NOD_ENV==='production'? "none":'lax', // Allows cross-site cookie
+          sameSite:process.env.NOD_ENV==='production'? "none":'', // Allows cross-site cookie
           maxAge: 5 * 60 * 60 * 1000, // 5 hour
         });
         res.status(200).json({message:'login successfull'})
@@ -187,4 +188,85 @@ const checkauth=async(req,res)=>{
 
 }
 
-export  {signup,signin,verifyOtp,resendotp,checkauth}   
+const forgetpassword=async(req,res)=>{
+    const {email}=req.body
+    if(!email){
+        return res.status(400).json({message:"email not found"})
+    }
+
+    try {
+        const user=await userModel.findOne({email:email,isVerified:true})
+        if(!user){
+                        return res.status(400).json({message:"No account found with that email"})
+
+        }
+        console.log("user",user)
+        let otp=otp_generator.generate(4,{ upperCaseAlphabets: false,lowerCaseAlphabets:false, specialChars: false })
+        user.otp=otp
+        user.otpExpires=new Date(Date.now()+5*60000);
+
+        try {
+          let text=`
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>Password Reset Request</h2>
+        <p>Hi ${user.username},</p>
+        <p>Use the following One-Time Password (OTP) to reset your password:</p>
+        <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #007bff;">${otp}</div>
+        <p>This OTP is valid for 5 minutes. Please do not share it with anyone.</p>
+        <p>If you didn’t request this, you can safely ignore this email.</p>
+        <hr />
+        <p style="font-size:12px;color:#777;">Need help? Contact us at mrigmart@yourdomain.com</p>
+      </div>
+          `
+            await sendMail(email,`Reset Your Password `,text)
+        } catch (error) {
+                      return res.status(400).json({message:"Failed to send OTP email. Please try again."})
+
+            
+        }
+        await user.save()
+       return res.status(200).json({message:"email verification successfull"})
+        
+    } catch (error) {
+      console.log(error)
+        return res.status(500).json({message:"internal server error"})
+        
+    }
+}
+
+const resetPassword=async(req,res)=>{
+  const {email}=req.params
+  const {password,confirmPassword}=req.body
+  console.log("inside the reset passsword")
+  console.log(req.body)
+  console.log(email,password,confirmPassword)
+
+  if(!email){
+    return res.status(400).json({message:'email not found'})
+  }
+  if(!password || ! confirmPassword){
+    return res.status(400).json({message:"password do not found"})
+  }
+  if(password !== confirmPassword){
+    return res.status(400).json({message:'password dot not match'})
+
+  }
+
+  try {
+    const user=await userModel.findOne({email:email})
+    if(!user){
+      return res.status(400).json({message:"account not found,please create.."})
+    }
+    
+    const hashedPassword=await bcrypt.hash(password,10)
+    user.password=hashedPassword
+    await user.save()
+    res.status(200).json({message:'password reseted successfully'})
+   
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:'internal server error'})
+  }
+}
+
+export  {signup,signin,verifyOtp,resendotp,checkauth,forgetpassword,resetPassword}   

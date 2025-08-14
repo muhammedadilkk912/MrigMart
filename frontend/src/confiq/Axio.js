@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 // Response Interceptor for catching 401 errors
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error) => { 
     if (error.response?.status === 401) {
       console.log("axiosinterceptor=",error)
       store.dispatch(setLogout());

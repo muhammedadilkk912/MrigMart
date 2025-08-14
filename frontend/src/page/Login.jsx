@@ -77,7 +77,13 @@ return true
    
   };
   const handleGoogleLogin = () => {
-  window.open("http://localhost:4500/api/auth/google", "_self");
+     const baseURL = import.meta.env.VITE_API_BASE_URL;
+    // console.log("baseURL=",baseURL)
+    // https://mrigmart-backend.onrender.com/api/auth/google/callback
+    // return null
+
+  window.open(`${baseURL}/auth/google`, "_self");
+  //  window.location.href=`${baseURL}/auth/google`
 };
 
 
@@ -151,9 +157,11 @@ return true
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-[#ABBB19] hover:text-[#9aaa10]">
+                <Link 
+                to='/forgetpasssword'
+                 className="font-medium text-[#ABBB19] hover:text-[#9aaa10]">
                   Forgot your password?
-                </a>
+                </Link>
               </div>
             </div>
 
