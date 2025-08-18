@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bannerModel from '../model/banner.model.js';
 import categoryModel from '../model/category.model.js'
 import productModel from '../model/product.model.js'
+import reviewModel from '../model/review.model.js'
 
 const getbanner = async (req, res) => {
     console.log("inside the get banner")
@@ -116,6 +117,7 @@ console.log("products=",products[0].products)
 }
 
 const getproduct=async(req,res)=>{
+  console.log("product page ")
   
     const{id}=req.params
     console.log(id)
@@ -138,6 +140,7 @@ const getproduct=async(req,res)=>{
 
 const similiarProduct=async(req,res)=>{
   console.log("inside the similiar product");
+  // return null
   
   const{id,productId}=req.params
   console.log(id,productId)
@@ -150,13 +153,13 @@ const similiarProduct=async(req,res)=>{
     // {_id:{$ne:productId},category:id}
     const products=await productModel.aggregate([  {
     $match: {
-      category: new mongoose.Types.ObjectId(id),
+       category: new mongoose.Types.ObjectId(id),
       _id: { $ne: new mongoose.Types.ObjectId(productId) }
     }
   }
   ,{ $lookup:{
     from:'reviews',
-    localField:'_id',
+    localField:'_id', 
     foreignField:'product',
     as:'review'
 
@@ -168,9 +171,13 @@ const similiarProduct=async(req,res)=>{
       averageRating:{$avg:"$review.rating"}
     }
   },{
-    $limit:5
+    $limit:8
   }
 ])
+products.forEach(element => {
+  console.log(productId,"=",element._id)
+  
+});
 
 
     if(products.length === 0){
@@ -489,10 +496,29 @@ const bestsellerproducts=async(req,res)=>{
 
 }
 
+const getReviews=async(req,res)=>{
+    const {id}=req.params
+    if(!id){
+        return res.status(400).json({message:'id not found'})
+    }
+    try {
+        const reviews=await reviewModel.find({product:id}).populate('user')
+        if(reviews.length === 0){
+            return res.status(400).json({message:'there is no review added '})
+        }
+        res.status(200).json({message:"reivews got it",reviews})
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message:'internal server error'})
+    }
+  }
 
 
+  
+ 
 
 
 export { getcategories,similiarProduct, getbanner,products_by_category,getproduct,getfilteredPrdoucts,
-  searchProducts,featuredproducts,bestsellerproducts
+  searchProducts,featuredproducts,bestsellerproducts,getReviews
  };

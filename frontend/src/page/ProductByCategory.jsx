@@ -138,7 +138,7 @@ useEffect(() => {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       <Layout>
-        <div className={`w-full  mx-auto px-4  py-8 max-w-7xl`}>
+        <div className={`w-full  mx-auto px-2 sm:px-3 lg:px-5   py-8 `}>
           {/* Mobile filter dialog */}
           {mobileFiltersOpen && (
             <div className="fixed backdrop-blur-xs inset-0 z-50 flex">

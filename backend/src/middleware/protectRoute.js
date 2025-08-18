@@ -5,6 +5,7 @@ const protectRoute = (req, res, next) => {
   console.log("Cookies received:", req.cookies);
 
   const token = req.cookies.token; // ⬅️ Check actual cookie key
+  console.log("token=",token)
 
   if (!token) {
     console.log("❌ No token found in cookies");

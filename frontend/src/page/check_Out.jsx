@@ -43,6 +43,11 @@ const check_Out = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [editAddress,setEditAddress]=useState()
   const [editMobile,setEditMobile]=useState()
+  const [loading,setLoading]=useState(false)
+  const [fieldLoading,setFieldLoading]=useState({
+    mobile:false,
+    address:false
+  })
 
  
 
@@ -122,7 +127,8 @@ const total = useMemo(() => {
       return null
     }
     try {
-      setIsloading(true)
+      // setIsloading(true)
+      setFieldLoading({...fieldLoading,mobile:true})
       const response=await axiosInstance.post('/user/updatemobile',{mobile})
       toast.success(response?.data?.message)
       console.log(response)
@@ -131,7 +137,7 @@ const total = useMemo(() => {
       console.log(error)
       toast.error(error?.response?.data?.message)
     }finally{
-      setIsloading(false)
+       setFieldLoading({...fieldLoading,mobile:false})
     }
   };
    const handleQuantity=(newQuantity)=>{
@@ -175,12 +181,20 @@ const total = useMemo(() => {
       
     
        let key=['street','city','district','state','country','pin']
-       const check=key.some((val)=>{
-        if(editAddress[val]!== address[val]){
+       let check=false
+       if(editAddress){
+          check=key.some((val)=>{
+        if(editAddress && editAddress[val]!== address[val]){
           return true
         }
        })
+       }else{
+        check=true
+       }
+       
+       
        if(check){
+        console.log("inside the save address")
          try {
           const response=await axiosInstance.post('/user/updateAddress',{address})
           console.log(response)
@@ -230,7 +244,8 @@ const total = useMemo(() => {
 
     try {
       
-       dispatch(showLoading())
+      //  dispatch(showLoading())
+      setLoading(true)
          const response=await axiosInstance.post('/user/payment',{
           cart,mobile,address,shipping,source:'direct'
          })
@@ -239,7 +254,8 @@ const total = useMemo(() => {
     } catch (error) {
       console.log(error)
     }finally{
-       dispatch(hideLoading())
+      //  dispatch(hideLoading())
+      setLoading(false)
     }
 
   };
@@ -286,16 +302,45 @@ const total = useMemo(() => {
                 />
                 <div className="flex justify-end space-x-2">
                   <button
+                  disabled={fieldLoading.mobile}
                     onClick={() => setShowMobileForm(false)}
                     className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100"
                   >
                     Cancel
                   </button>
                   <button
+                    disabled={fieldLoading.mobile}
                     onClick={saveMobileNumber}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className={`px-4  flex justify-center items-center py-2 ${fieldLoading.mobile? 'bg-gray-300 text-sm cursor-not-allowed':' hover:bg-blue-700 bg-blue-600' }  text-white rounded-md`}
                   >
-                    Save
+                     {fieldLoading.mobile ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-3 w-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Loading...
+                     
+                    </>
+                  ) : (
+                    ' Save '
+                  )}
                   </button>
                 </div>
               </div>
@@ -408,16 +453,45 @@ const total = useMemo(() => {
 
                 <div className="flex justify-end space-x-2">
                   <button
+                    disabled={fieldLoading.address}
                     onClick={() => setShowAddressForm(false)}
                     className="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100"
                   >
                     Cancel
                   </button>
                   <button
+                  disabled={fieldLoading.address}
                     onClick={saveAddress}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className={`px-4 flex justify-center items-center py-2 ${fieldLoading.address ? 'bg-gray-300 text-sm cursor-not-allowed':'bg-blue-600  hover:bg-blue-700'}  text-white rounded-md`}
                   >
-                    Save Address
+                    {fieldLoading.address ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-3 w-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Loading...
+                     
+                    </>
+                  ) : (
+                    ' Save '
+                  )}
                   </button>
                 </div>
               </div>
@@ -533,15 +607,46 @@ const total = useMemo(() => {
                 <span>{total}</span>
               </div>
             </div>
+            {
+              console.log("selected address=",selectedAddress)
+            }
 
             <button
             type="butt"
               onClick={handleCheckout}
-              // disabled={!selectedAddress || !userData.mobile}
-              className={`w-full mt-6 py-3 rounded-md font-medium bg-blue-600 hover:bg-blue-700 text-white
+               disabled={!address.street.trim() || !mobile}
+              className={`w-full flex justify-center items-center mt-6 py-3  ${loading  ?'bg-gray-300 cursor-not-allowed ': !mobile ? 'bg-gray-300':'bg-blue-600 hover:bg-blue-700'} rounded-md font-medium  text-white
               `}
             >
-              Proceed to Payment
+              
+              {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Loading...
+                     
+                    </>
+                  ) : (
+                    ' Proceed to payment '
+                  )}
             </button>
           </div>
         </div>

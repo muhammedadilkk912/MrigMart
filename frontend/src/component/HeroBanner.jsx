@@ -73,9 +73,9 @@ const HeroBanner = () => {
                     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 drop-shadow-lg">
                       {banner.title?.title || 'New Collection'}
                     </h1>
-                    <p className="text-sm sm:text-base md:text-xl mb-4 sm:mb-8 drop-shadow-lg max-w-md sm:max-w-2xl mx-auto">
+                    {/* <p className="text-sm sm:text-base md:text-xl mb-4 sm:mb-8 drop-shadow-lg max-w-md sm:max-w-2xl mx-auto">
                       {banner.subtitle?.subtitle || "Summer"}
-                    </p>
+                    </p> */}
                     {
                      banner && banner?.link &&(
                          <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">

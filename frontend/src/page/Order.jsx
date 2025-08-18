@@ -45,7 +45,7 @@ const Order = () => {
 
   useEffect(() => {
     if (orders && orders.length > 0) {
-      fetchReviews();
+      //  fetchReviews();
       filterOrders(activeTab);
     }
   }, [orders, activeTab]);

@@ -265,33 +265,41 @@ const deleteCartItem=async(req,res)=>{
     }
 }
 
-const orders=async(req,res)=>{
-    console.log("inside the orders")
+const orders=async(req,res)=>{         
+    console.log("inside the orders") 
+    
+    let sort={createdAt:-1}
+   
     const {filter}=req.params
     console.log(filter)
-    let query={user:req.user.id}
+    let query={user:req.user.id}  
     if(filter==='pending'){
         
         query['items.products.status']='pending'
 
     }else if(filter==='shipped'){
+        sort={
+            'items.products.deliveryDate':-1  
+        }
          query['items.products.status']='shipped'
     }else if(filter === 'delivered'){
-        ch='delivered'
+        query['items.products.status']='delivered'
     }else if(filter === 'cancelled'){
          query['items.products.status']='cancelled'
     }
     console.log("query",query)
     
-    
+      
     try {
-        const orders=await orderModel.find(query).populate('items.products.productId')
-        console.log(orders)
+        const orders=await orderModel.find(query).populate('items.products.productId').sort(sort)
+        console.log("orders=",orders)
+       
         if(orders.lenght===0){
             return res.status(400).json({message:'no orders found'})
         }
-        res.status(200).json({message:"orders got it",orders})
-    } catch (error) {
+        //  return null  
+        res.status(200).json({message:"orders  fetched ",orders})      
+    } catch (error) {  
         console.log(error)
         res.status(500).json({message:'internal server error'})
     }
@@ -425,23 +433,7 @@ const getDetails=async(req,res)=>{
         res.status(500).json({message:'internal server error'})
     }
 }
-const getReviews=async(req,res)=>{
-    const {id}=req.params
-    if(!id){
-        return res.status(400).json({message:'id not found'})
-    }
-    try {
-        const reviews=await reviewModel.find({product:id}).populate('user')
-        if(reviews.length === 0){
-            return res.status(400).json({message:'there is no review added '})
-        }
-        res.status(200).json({message:"reivews got it",reviews})
-        
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({message:'internal server error'})
-    }
-}
+
 
 const logout=async(req,res)=>{
     console.log(req.user)
@@ -561,5 +553,5 @@ const updateProfile=async(req,res)=>{
 }
 
 export{wishlist,addToWishlist,deletewishlist,deleteCartItem ,updateAddress,addToCart,getCarts ,update_Cartquantity,getvalidcartitems,getaddress,
-    updateuser,orders,Addrivew,getreviews,getProduct,getDetails,getReviews,logout,getAccount,updateAddress_ac,otpSend,updateProfile } 
+    updateuser,orders,Addrivew,getreviews,getProduct,getDetails,logout,getAccount,updateAddress_ac,otpSend,updateProfile } 
 

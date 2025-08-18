@@ -1,6 +1,6 @@
 import express from "express";
 import {getbanner,getcategories,products_by_category,getproduct,similiarProduct,
-    getfilteredPrdoucts,searchProducts,featuredproducts,bestsellerproducts
+    getfilteredPrdoucts,searchProducts,featuredproducts,bestsellerproducts,getReviews
 } from '../controller/public_Controller.js'
 const router=express.Router()
 
@@ -13,6 +13,8 @@ router.get('/filteredproducts/:id',getfilteredPrdoucts)
 router.get('/getproduct/:id',getproduct)  
 router.get('/SimilarProduct/:id/:productId',similiarProduct)
 router.get('/searchproducts',searchProducts)  
+router.get('/review/:id',getReviews)
+
 
 router.get('/featuredproducts/:limit',featuredproducts)
 router.get('/bestselerproducts/:limit',bestsellerproducts)

@@ -17,3 +17,47 @@
   
  
 // const [visibleBestseller,sett]
+
+
+ {featuredProducts.map((product) => (
+                  
+                  <div
+                    onClick={()=>navigate(`/product/${product._id}`)}
+                    key={product.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+                  >
+                    <div className="relative">
+                      <img
+                        src={product.images[0] || "/banner.jpg"}
+                        alt={product.name}
+                        className="w-full h-64 object-cover"
+                      />
+                      {/* <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold flex items-center">
+                        ⭐ {product.rating}
+                      </div> */}
+                    </div>
+                    <div className="p-4">
+                      <div className="w-full flex items-center justify-between">
+                        <h3 className="font-semibold text-lg mb-2">
+                          {product.name}
+                        </h3>
+                        <button type="button"
+                        onClick={(e)=>addwhishlist(product._id,e)}
+                        >
+                          <FaRegHeart className={`${wishlist.includes(product._id)?'text-red-500':'text-gray-700'}`} size={20}  />
+                        </button>
+                      </div>
+
+                      <div className="flex mt-1 justify-between items-center">
+                        <span className="text-xl font-bold">
+                          ${product.discountprice.toFixed(2)}
+                        </span>
+                        <button 
+                         onClick={(e)=>addToCart(product._id,e)}
+                         className=" bg-[#ABBB19] text-white px-4 py-2 rounded-md hover:bg-[#9aaa10] transition duration-300">
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}

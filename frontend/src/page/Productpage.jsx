@@ -6,6 +6,8 @@ import { AiFillThunderbolt } from "react-icons/ai";
 import ProductCard from '../component/ProductCard';
 import { showLoading,hideLoading } from "../Redux/LoadingSlic";
 import {useDispatch,useSelector} from 'react-redux'
+import { FaStar } from "react-icons/fa6";
+
 // import {toast as ho} from "react-hot-toast";
 import Review from "../component/Review";
 import {toast  } from 'react-toastify'
@@ -22,7 +24,11 @@ const Productpage = () => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(4);
   const[similarProduct,setSimiliarProduct]=useState([])
-  const [reivews,setReviews]=useState([])
+  const [reviews,setReviews]=useState([])
+  const [review,setReview]=useState({
+    total:null,
+    average:null
+  })
 
   console.log("product,",product)
  
@@ -34,7 +40,7 @@ const Productpage = () => {
   useEffect(() => {
   if (product?.category?._id) {
     getSimiliarProduct();
-    getReviews()
+     getReviews()  
   }
 }, [product?.category?._id]);
 
@@ -70,15 +76,19 @@ const Productpage = () => {
   }
 
   const getReviews=async()=>{
+    console.log("handle review in get reviews")
     try {
-      const response =await axiosInstance.get(`/user/review/${id}`)
-      console.log(response)
-      setReviews(response?.data?.reviews)
+      const response =await axiosInstance.get(`/review/${id}`)
+      console.log("review response",response)
+      setReviews(response?.data?.reviews) 
+      let rev=response?.data?.reviews 
+      
+      handleReview(rev) 
     } catch (error) {
       console.log("error in getting reviews",error)
     }
   }
-   
+      
 
  const  Addtocart=async(productId)=>{
     console.log("add to cart",isauthenticate)
@@ -96,8 +106,28 @@ const Productpage = () => {
         toast.error(error?.response?.data?.message)
        }
  }
+
+const handleReview=(rev)=>{
+  console.log("inside handle review",rev)
   
-  
+  if(rev.length > 0){
+    let avg=0
+    for (let index = 0; index < rev.length; index++) {
+      avg=avg+rev[index].rating
+      
+      
+    }
+    console.log(avg)
+    avg=avg / rev.length
+    console.log("avg",avg,"total",rev.length)
+    setReview({average:avg,total:rev.length})
+
+  }else{
+    console.log("handle review else")
+
+  }
+
+}
 
 //   if (loading) {
 //     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -123,21 +153,22 @@ const Productpage = () => {
       <Layout>
 
       
-    <div className="min-h-screen w-full py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen w-full py-8 px-4 sm:px-8 lg:px-8 mx-auto">
       {/* Main Product Section */}
       <div className="flex flex-col lg:flex-row gap-8 mb-12">
         {/* Left Section - Image Gallery */}
         <div className="w-full lg:w-2/5 lg:sticky lg:top-10 h-fit">
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex flex-col lg:flex-row gap-4  ">   
             {/* Thumbnail Column */}
-            <div className="flex lg:flex-col gap-2 order-last lg:order-first overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto pb-2 lg:pb-0">
+            {/* <div className="flex flex-row sm:flex-col gap-2 sm:order-first order-last ">      */}
+             <div className="flex md:flex-col gap-2 order-last md:order-first   pb-2 ">
               {product.images.map((image, index) => (
                 <div
                   key={index}
-                  onClick={() => setSelectedImage(image)}
-                  className={`flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 border rounded cursor-pointer overflow-hidden transition ${
-                    selectedImage === image ? "border-2 border-[#ABBB19]" : "border-gray-200 hover:border-gray-300"
-                  }`}
+                  onClick={() => setSelectedImage(image)}   
+                  className={`flex-shrink-0 w-10 h-10 lg:w-20 lg:h-20 border rounded cursor-pointer overflow-hidden transition ${
+                    selectedImage === image ? "border-2 border-blue-500" : "border-gray-200 hover:border-gray-300"
+                  }`}     
                 >
                   <img
                     src={image}
@@ -149,7 +180,7 @@ const Productpage = () => {
             </div>
             
             {/* Main Image */}
-            <div className="w-full aspect-square border border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+            <div className=" max-w-96 aspect-square border border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
               <img
                 src={selectedImage || product.images[0]}
                 alt={product.name}
@@ -190,12 +221,12 @@ const Productpage = () => {
             
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl font-bold text-gray-900">
-                ${product?.discountprice}
+                {product?.discountprice}
               </span>
               {product?.discount > 0 && (
                 <>
                   <span className="text-lg line-through text-gray-500">
-                    ${product?.price}
+                    {product?.price}
                   </span>
                   <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
                     {product?.discount}% OFF
@@ -203,14 +234,16 @@ const Productpage = () => {
                 </>
               )}
             </div>
-            
-            <div className="flex items-center gap-2 mb-6">
-              <div className="flex text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i}>★</span>
-                ))}
+            {
+              reviews && reviews.length >0 &&(
+                <>
+                 <div className="flex items-center gap-2 mb-6">
+              <div className="flex justify-center px-2 gap-2 items-center bg-green-500 py-1 rounded-md text-white">
+                <span><FaStar size={14}/></span>
+                <span className="text-sm">{review.average}</span>
+                
               </div>
-              <span className="text-gray-500 text-sm">(120 reviews)</span>
+              <span className="text-gray-500 text-sm">({review.total} reviews)</span>
             </div>
             
             <div className="mb-6">
@@ -219,6 +252,12 @@ const Productpage = () => {
                 {product?.description}
               </p>
             </div>
+            </>
+
+              )
+            }
+            
+           
           </div>
 
           {/* Product Details Card */}
@@ -254,8 +293,8 @@ const Productpage = () => {
           </div>
           <div className="w-full p-4  border border-gray-200 rounded-lg shadow-sm">
            {
-            reivews?.length >0 ?(
-               <Review reviews={reivews} />
+            reviews?.length >0 ?(
+               <Review reviews={reviews} />
             ):(
               <div className="h-20 my-2">
                 <h1 className="font-medium text-2xl ">Reviews</h1>

@@ -83,14 +83,14 @@ const createCheckoutSession = async (req, res) => {
      
        
     
-
+   const baseURL=process.env.Base_Origin
     // ✅ Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
       line_items,
-      success_url: 'http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: 'http://localhost:4500/payment-cancel',
+      success_url: `${baseURL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseURL}/payment-cancel`,
       metadata: {
         userId,
         mobile,
@@ -138,7 +138,7 @@ const createCheckoutSession = async (req, res) => {
     
   
 //     // 👇 INSERT THIS BLOCK HERE
-//     let items = lineItems.data.map((item) => ({
+//     let items = lineItems.data.map((item) => ({ 
      
 //       productId: item.price.product.metadata.productId,
 //       quantity: item.quantity,

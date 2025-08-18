@@ -15,9 +15,9 @@ dotenv.config()
 
 const app=express()
 console.log("secret key=",process.env.STRIPE_SECRET_KEY)
-app.use(cors({  
+app.use(cors({   
     //  origin: 'http://localhost:5173',
-    // origin:'https://mrig-mart-iuk2.vercel.app',
+    // origin:'https://mrig-mart-iuk2.vercel.app',  
      origin:process.env.Base_Origin,
     credentials: true // ✅ Important for cookies/sessions    
 }));
