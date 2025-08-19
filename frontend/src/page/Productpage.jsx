@@ -30,7 +30,7 @@ const Productpage = () => {
     average:null
   })
 
-  console.log("product,",product)
+  // console.log("product,",product)
  
 
   useEffect(() => {
@@ -240,7 +240,7 @@ const handleReview=(rev)=>{
                  <div className="flex items-center gap-2 mb-6">
               <div className="flex justify-center px-2 gap-2 items-center bg-green-500 py-1 rounded-md text-white">
                 <span><FaStar size={14}/></span>
-                <span className="text-sm">{review.average}</span>
+                <span className="text-sm">{review.average.toFixed(1)}</span>
                 
               </div>
               <span className="text-gray-500 text-sm">({review.total} reviews)</span>

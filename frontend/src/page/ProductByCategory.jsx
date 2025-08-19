@@ -8,7 +8,6 @@ import { IoClose } from "react-icons/io5";
 import { useDebounce } from "use-debounce";
 import Layout from "../component/Layout";
 
-
 const ProductByCategory = () => {
   const isFirstLoad = useRef(true);
   const { id } = useParams();
@@ -18,122 +17,116 @@ const ProductByCategory = () => {
   const [categoryName, setCategoryName] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [maxprice,setMaxprice]=useState(null)
-
+  const [maxprice, setMaxprice] = useState(null);
 
   const [filters, setFilters] = useState({
-    priceRange: [0,0],
+    priceRange: [0, 0],
     ratings: null,
     sortBy: "popular",
     inStock: false,
-  
   });
   // console.log("filetr=",filters)
   const [debouncePriceRanges] = useDebounce(filters.priceRange, 500);
+
     // Fetch products by category in initial mount
   useEffect(() => {
     fetchProducts();
   }, [id]);
 
+  //2nd useefefect
   useEffect(() => {
     if (isFirstLoad.current) {
-    isFirstLoad.current = false;
-    return;
-  }
-     if (maxprice) {
-    fetchFilteredProducts();
-  }
+      isFirstLoad.current = false;
+      return;
+    }
+    if (maxprice) {
+      fetchFilteredProducts();
+    }
+    console.log("second useefefect")
   }, [debouncePriceRanges]);
   // 🟢 Set max price when fetched
-useEffect(() => {
-  if (maxprice) {
-    setFilters((prev) => ({
-      ...prev,
-      priceRange: [0, maxprice],
-    }));
-  }
-}, [maxprice]);
-
-  // Fetch products by category in initial mount
   useEffect(() => {
-    fetchProducts();
-  }, [id]);
-  
+    if (maxprice) {
+      setFilters((prev) => ({
+        ...prev,
+        priceRange: [0, maxprice],
+      }));
+    }
+  }, [maxprice]);
+
+    useEffect(() => {
+      console.log("third useefefect")
+    if (mobileFiltersOpen) setMobileFiltersOpen(false);
+
+    if (maxprice) {
+       fetchFilteredProducts();
+    }
+  }, [filters.ratings, filters.inStock, filters.sortBy]);
+
+
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(`/productsbycategory/${id}`);
-      console.log("rep=",response)
+      console.log("rep=", response);
       const data = response?.data?.products;
 
-      // console.log("data=", data);
+       console.log("data=", data);
       // console.log("product list=",data[0].products)
-      console.log("***",data[0].products)
+      // console.log("***", data[0].products);
       setProducts(data[0].products);
       setCategoryName(response?.data?.categoryName || "Category");
-      if(data[0].maxprice){
-        console.log("old max price",maxprice)
-        let max=customRoundByThreeDigits(data[0].maxprice)
-         setMaxprice(max)
-        
+      if (data[0].maxprice) {
+        // console.log("old max price", maxprice);
+        let max = customRoundByThreeDigits(data[0].maxprice);
+        setMaxprice(max);
       }
 
       // Extract unique categories from products
-      
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
   };
-  useEffect(()=>{
-    if(mobileFiltersOpen)setMobileFiltersOpen(false)
-      
-       if (maxprice) {
-    fetchFilteredProducts();
-  }
-  },[filters.ratings,filters.inStock,filters.sortBy])
 
-  const fetchFilteredProducts=async()=>{
-    
+
+  const fetchFilteredProducts = async () => {
     try {
-      setLoading(true)
-     console.log(filters)
-      const response=await axiosInstance.get(`/filteredproducts/${id}`, {
-      params: {
-        minPrice: filters.priceRange[0],
-        maxPrice: filters.priceRange[1],
-        ratings: JSON.stringify(filters.ratings),
-        sortBy: filters.sortBy,
-        inStock: filters.inStock,
-      },
-      
-    });
-    console.log("console.log",response)
-    setProducts(response?.data?.products)
+      setLoading(true);
+      // console.log(filters);
+      const response = await axiosInstance.get(`/filteredproducts/${id}`, {
+        params: {
+          minPrice: filters.priceRange[0],
+          maxPrice: filters.priceRange[1],
+          ratings: JSON.stringify(filters.ratings),
+          sortBy: filters.sortBy,
+          inStock: filters.inStock,
+        },
+      });
+      console.log("filtered product console.log", response);
+      setProducts(response?.data?.products);
     } catch (error) {
-      if(error.status===400){
-        setProducts([])
+      if (error.status === 400) {
+        setProducts([]);
       }
-      console.log(error)
-    }finally{
-       setLoading(false)
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  function customRoundByThreeDigits(value) {
+    const lastThree = value % 1000;
+    const base = value - lastThree;
+
+    if (lastThree <= 500) {
+      return base + 500;
+    } else {
+      return base + 1000;
     }
   }
-
- 
-
- 
-  function customRoundByThreeDigits(value) {
-  const lastThree = value % 1000;
-  const base = value - lastThree;
-
-  if (lastThree <= 500) {
-    return base + 500;
-  } else {
-    return base + 1000;
-  }
-}
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
@@ -197,21 +190,16 @@ useEffect(() => {
 
             {/* Desktop filter sidebar */}
             <div className="hidden md:block w-64 flex-shrink-0">
-              {
-                !maxprice?(
-                 <span></span>
-
-                ):(
-                   <FilterSidebar
-                filters={filters}
-                setFilters={setFilters}
-                categories={categories}
-                maxprice={maxprice}
-              />
-                  
-                )
-              }
-              
+              {!maxprice ? (
+                <span></span>
+              ) : (
+                <FilterSidebar
+                  filters={filters}
+                  setFilters={setFilters}
+                  categories={categories}
+                  maxprice={maxprice}
+                />
+              )}
             </div>
 
             {/* Main content */}

@@ -36,11 +36,12 @@ const getcategories = async(req,res) => {
 };
 
 const products_by_category=async(req,res)=>{
+  console.log("inside the product page")
     let {id}=req.params
     id=new mongoose.Types.ObjectId(id)
 
     try {
-//        const products = await productModel.aggregate([
+//        const products = await productModel.aggregate([ 
 //   {
 //     $match: {
 //       category: new mongoose.Types.ObjectId(id)  // Ensure it's an ObjectId
@@ -80,9 +81,12 @@ const products=await productModel.aggregate([
   }
 },{
   $addFields: {
-    averageRating: { $avg: "$reviews.rating" }
+    averageRating: {
+      $round: [{ $avg: "$reviews.rating" }, 1]
+    }
   }
-},
+}
+,
   // Step 4: Group all products and extract max price
 {
  $group:{
@@ -90,7 +94,7 @@ const products=await productModel.aggregate([
   maxprice:{$max:'$discountprice'},
   products:{$push:'$$ROOT'}
  }
-},
+}, 
 //reshape the result
 {
   $project:{
@@ -100,8 +104,13 @@ const products=await productModel.aggregate([
   }
 }
 ])
-console.log("products=",products)
-console.log("products=",products[0].products)
+
+// console.log("pp=",products[0].products)
+let c=products[0].products
+for (let index = 0; index < c.length; index++) {
+console.log("avrage rating",c[index].averageRating)
+  
+}
 
 
 
@@ -151,8 +160,8 @@ const similiarProduct=async(req,res)=>{
   }
   try {
     // {_id:{$ne:productId},category:id}
-    const products=await productModel.aggregate([  {
-    $match: {
+    const products=await productModel.aggregate([  {   
+    $match: { 
        category: new mongoose.Types.ObjectId(id),
       _id: { $ne: new mongoose.Types.ObjectId(productId) }
     }
