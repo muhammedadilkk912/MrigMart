@@ -138,7 +138,7 @@ const CartPage = () => {
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       <Layout>
         <div className="h-full bg-white/75 py-12 px-4 sm:px-6 lg:px-8 w-full mx-auto">
-          {cartItems?.items?.length === 0 ? (
+          { cartItems.length === 0|| cartItems?.items?.length === 0 ? (
             <div className="flex  sm:pt-20  gap-1 sm:gap-2 items-center justify-center">
               <p className="text-gray-400  text-sm sm:text-xl">youre cart is empty</p>
 

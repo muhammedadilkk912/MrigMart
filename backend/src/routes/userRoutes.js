@@ -25,11 +25,11 @@ router.post('/updateAddress',protectRoute,updateAddress)
 router.post('/payment',protectRoute,createCheckoutSession)  
 // router.post('/payment/confirm',protectRoute,confirmPayment)
   
-router.get('/orders/:filter',protectRoute,orders)   
+router.get('/orders/:filter',protectRoute,orders)    
 router.post('/addreview',protectRoute,Addrivew)
 router.get('/getreviews',protectRoute,getreviews)
 router.get('/getproduct/:id',protectRoute,getProduct)         
-   
+    
 
 
 router.get('/details/product&address/:id',protectRoute,getDetails)
@@ -39,5 +39,5 @@ router.post('/account/addressupdate',protectRoute,updateAddress_ac)
 router.post('/changingemail/otp',protectRoute,otpSend)
 router.put('/updateprofile',protectRoute,updateProfile)
 
-router.post('/logout',protectRoute,logout)
+router.post('/logout',protectRoute,logout) 
 export default router

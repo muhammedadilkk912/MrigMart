@@ -2,14 +2,17 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { FaTrash, FaShoppingCart, FaCartPlus } from 'react-icons/fa';
 import axiosInstance from '../confiq/Axio';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { showLoading,hideLoading } from '../Redux/LoadingSlic';
 import Layout from '../component/Layout';
+import { toast } from 'react-hot-toast';
 const WishlistPage = () => {
     const dispatch=useDispatch()
+    const isAuthenticate=useSelector((state)=>state.auth.isAuthenticate)
 
 
   const [wishlistItems, setWishlistItems] = useState([]);
+  console.log("wishlist=",wishlistItems)
 
   useEffect(()=>{
     const getwhislist=async()=>{
@@ -45,18 +48,34 @@ try {
 }
   }
 
-  const addToCart = (id) => {
-    alert(`Item ${id} added to cart!`);
-  };
+ const  Addtocart=async(productId)=>{
+  console.log("product id",productId)
 
-  const addAllToCart = () => {
-    const inStockItems = wishlistItems.filter(item => item.inStock);
-    if (inStockItems.length === 0) {
-      alert('No items in stock to add to cart!');
-      return;
-    }
-    alert(`Added ${inStockItems.length} items to cart!`);
-  };
+  // return null
+    console.log("add to cart",isAuthenticate)
+       if(!isAuthenticate){
+        
+        navigate('/login')
+       }
+       console.log("product id=",productId)
+       
+       try {
+        const response=await axiosInstance.post('/user/addToCart',{productId})   
+        toast.success(response?.data?.message)
+       } catch (error) {
+        console.log(error)
+        toast.error(error?.response?.data?.message)
+       }
+ }
+
+  // const addAllToCart = () => {
+  //   const inStockItems = wishlistItems.filter(item => item.inStock);
+  //   if (inStockItems.length === 0) {
+  //     alert('No items in stock to add to cart!');
+  //     return;
+  //   }
+  //   alert(`Added ${inStockItems.length} items to cart!`);
+  // };
 
   const totalValue = wishlistItems.reduce((sum, item) => sum + item.product.discountprice, 0);
   const inStockItemsCount = wishlistItems.filter(item => item).length;
@@ -124,7 +143,7 @@ try {
                       <FaTrash className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => addToCart(item.id)}
+                      onClick={() => Addtocart(item.product._id)}
                     //   disabled={!item.product.stock}
                       className={`px-2 py-3 rounded-md flex gap-2 justify-center items-center transition-colors ${item.product.stock >0 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
                       aria-label="Add to cart"

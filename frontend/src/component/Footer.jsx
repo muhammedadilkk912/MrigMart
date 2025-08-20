@@ -9,7 +9,7 @@ const Footer = () => {
           
           {/* Column 1 - About */}
           <div>
-            <h3 className="text-xl font-bold mb-4">ShopEase</h3>
+            <h3 className="text-xl font-bold mb-4">MrigMart</h3>
             <p className="text-gray-400">
               Your one-stop destination for all your shopping needs. Quality products at affordable prices.
             </p>
@@ -43,7 +43,7 @@ const Footer = () => {
             <address className="text-gray-400 not-italic">
               <p>123 Shopping Street</p>
               <p>Retail City, RC 10001</p>
-              <p className="mt-2">Email: info@shopease.com</p>
+              <p className="mt-2">Email: info@MrigMart.com</p>
               <p>Phone: (123) 456-7890</p>
             </address>
           </div>
@@ -67,7 +67,7 @@ const Footer = () => {
           </div>
           
           <div className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} ShopEase. All rights reserved.
+            &copy; {new Date().getFullYear()} MrigMart. All rights reserved.
           </div>
         </div>
       </div>

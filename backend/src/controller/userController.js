@@ -77,6 +77,7 @@ const addToCart=async(req,res)=>{
   console.log(userId,productId)
   try {
     const product = await productModel.findById(productId);
+    console.log("ppp=",product)
   if (!product) return res.status(404).json({ message: 'Product not found' });
       // Find the user's cart in MongoDB
   let cart = await cartModel.findOne({ user: userId });
@@ -116,13 +117,13 @@ const addToCart=async(req,res)=>{
     });
     console.log(cart)
   }
-  console.log("final cart before updating db=",cart)
+  console.log("final cart before updating db=",cart)  
 
   // Save the cart
   await cart.save();
   res.json({ message: 'Added to cart' });
   } catch (error) {
-    console.log(error)
+    console.log( "error",error)
     return res.status(500).json({message:"internal server error"})
   }
 

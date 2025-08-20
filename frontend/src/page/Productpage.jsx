@@ -247,9 +247,9 @@ const handleReview=(rev)=>{
             </div>
             
             <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3 text-gray-800">Description</h2>
+              <h2 className="text-lg font-semibold mb-3 text-gray-800">Description </h2>
               <p className="text-gray-700 whitespace-pre-line">
-                {product?.description}
+                {product?.description || 'descriptioon'} 
               </p>
             </div>
             </>

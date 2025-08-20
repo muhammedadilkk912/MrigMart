@@ -24,14 +24,16 @@ const HomePage = () => {
   console.log("wishlist=",wishlist)
   // Sample data - replace with your actual data
   const categories = {
-    foods: "/category/food.jpg",
-    pets: "/category/pets.jpg",
+    food: "/category/food.jpg",
+    pets: "/category/pets.jpg",  
     health: "/category/health.jpg",
     toys: "/category/toys.jpg",
-    clothes: "/category/clothes.jpg",
-    " bowl&Feeders": "/category/bowl&feeder.jpg",
-    "Collars&leashes": "/category/collars.jpg",
+    "groom-supplies": "/category/gromm.jpg",  
+    "beds-furnitures": "/category/pet_furniture.webp",
+    // Collars&leashes: "/category/collars.jpg",
+    cloths:"/category/pet_clots.avif"
   };
+   
   const normalize = (str) => str.trim().toLowerCase();
 
   useEffect(() => {
@@ -127,8 +129,11 @@ const HomePage = () => {
               {category.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                   {category.slice(0, visibleCategories).map((category) => {
+                    console.log("category=",category.category)
                     const imageKey = normalize(category.category);
+                    console.log("image key=",imageKey)
                     const imageSrc = categories[imageKey] || "/banner.jpg";
+                    console.log("src=",imageSrc)
                     return (
                       <div
                         key={category._id}
@@ -181,7 +186,7 @@ const HomePage = () => {
                         ? setVisibleCategories(initialVisibleCount)
                         : setVisibleCategories(category.length)
                     }
-                    className="inline-flex items-center space-x-2 text-gray-700 hover:text-black transition-colors"
+                    className="inline-flex items-center justify-center bg-gray-400 rounded text-white py-1   px-2  hover:shadow-xl transition-colors"
                   >
                     {category.length === visibleCategories ? (
                       <span className="font-medium">Close categories</span>
