@@ -159,7 +159,7 @@ const Review = ({reviews}) => {
               {/* <h3 className="text-lg font-semibold text-gray-800">{review.title}</h3> */}
               
               <div className="flex items-center mt-1 mb-3">
-                <span className="text-sm text-gray-600">By {review.user.username}</span>
+                <span className="text-sm text-gray-600">By {review?.user?.username}</span>
                 <span className="mx-2 text-gray-400">•</span>
                 <span className="text-sm text-gray-500">{review.updatedAt}</span>
               </div>

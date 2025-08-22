@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,useMemo , useState } from 'react';
 import axiosInstance from '../confiq/Axio';
 import { useDispatch,useSelector } from 'react-redux';
 import { showLoading, hideLoading } from '../Redux/LoadingSlic';
 import {toast} from 'react-hot-toast'
 import Layout from '../component/Layout';
+import countryList from "react-select-country-list";
+import Select from "react-select";
+
+
 
 const CheckoutPage = () => {
   const cart=useSelector((state)=>state.cart.cart)
@@ -18,19 +22,31 @@ let shipping=subTotal < 1000 ? 50 :0
 
   console.log(subTotal)
   const dispatch = useDispatch();
+    const [editAddress,setEditAddress]=useState()
+    const [editMobile,setEditMobile]=useState()
+        const options = useMemo(() => countryList().getData(), []);  
+        console.log("option s=",options)  
+  
   const [address, setAddress] = useState({
-    street: '',
+    street: '',  
     city: '',
     district: '',
     state: '',
     pin: '',
-    country: 'United States' // Default country
+    country: '' // Default country    
   });
   const [mobile, setMobile] = useState('');
   const [editMode, setEditMode] = useState({
     phone: false,
-    address: false
+    address: false  
   });
+
+  const [fieldLoading,setFieldLoading]=useState({
+    phone:false,
+    address:false
+  })
+  console.log("editMode phone=",editMode)
+  console.log("loading=",fieldLoading)
 
   useEffect(() => {
     getAddress();
@@ -45,6 +61,7 @@ let shipping=subTotal < 1000 ? 50 :0
       
       if (data.phone) {
         setMobile(data.phone);
+        setEditMobile(data.phone)
       }
       
       if (data.address) {
@@ -56,6 +73,14 @@ let shipping=subTotal < 1000 ? 50 :0
           pin: data.address.pin || '',
           country: data.address.country || 'United States'
         });
+        setEditAddress({
+          street: data.address.street || '',
+          city: data.address.city || '',
+          district: data.address.district || '',
+          state: data.address.state || '',
+          pin: data.address.pin || '',
+          country: data.address.country || 'United States'
+        })
       }
     } catch (error) {
       console.error('Error fetching address:', error);
@@ -64,14 +89,50 @@ let shipping=subTotal < 1000 ? 50 :0
     }
   };
 
+    const adr_validation=()=>{
+       console.log(address)  
+      console.log("inside the address validation")
+      if(!address.street.trim()){
+        toast.error('street is required')
+        return false
+      }
+      if(!address.city.trim()){
+        toast.callerror('city is required')
+        return false
+      }
+       if(!address.district.trim()){
+        toast.error('district is required')
+        return false
+      }
+       if(!address.state.trim()){
+        toast.error('state is required')
+        return false
+      }
+       if(!address?.country?.trim()){
+        toast.error('country is required')
+        return false
+      }
+       if(!address.pin.trim()){
+        toast.error('pin  is required')
+        return false
+      }
+      return true
+      
+    }
+    console.log(address)
+
   const handleInputChange = (e) => {
+    console.log("event=",e.target)
+    
     const { name, value } = e.target;
+    console.log("name=",name)
     if (name === 'mobile') {
       setMobile(value);
     } else {
+      // if(name === 'countryList')
       setAddress(prev => ({
         ...prev,
-        [name]: value
+        [name]: name === 'country' ?value.label :value
       }));
     }
   };
@@ -89,20 +150,72 @@ let shipping=subTotal < 1000 ? 50 :0
       // dispatch(showLoading());
       
       if (field === 'phone') {
+         if(!mobile.trim()){
+              toast.error('phone number is required')
+              return null
+            }
+            const phonePattern = /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/;
+        
+            if (mobile.length > 10) {
+              toast.error("invalid mobile format");
+              return null;
+            }
+            if (!phonePattern.test(mobile)) {
+              toast.error("invalid mobile format");
+              return null;
+            }
+            
+            // if(mobile===editMode.){
+            //   setShowMobileForm(false);
+            //   return null
+            // }
         // Save mobile number
+        // return null
         console.log(mobile)
+        setFieldLoading({...fieldLoading,phone:true})
        const response= await axiosInstance.post('/user/updatemobile', {mobile} );
+       setFieldLoading({...fieldLoading,phone:true})
+       setEditMode({...editMode,phone:false})
+       console.log("mobile response=",response)
         
      }
        else if (field === 'address') {
+      
+
         // Save address
-        await axiosInstance.post('/user/updateAddress', { address });
+        if(adr_validation()){
+          let key=['street','city','district','state','country','pin']
+       let check=false
+       if(editAddress){
+          check=key.some((val)=>{
+        if(editAddress && editAddress[val]!== address[val]){
+          return true
+        }
+       })    
+       }else{
+         check=true
+       }
+       console.log(check)  
+
+      if(check){
+         setFieldLoading({...fieldLoading,phone:true})
+         const response=   await axiosInstance.post('/user/updateAddress', { address });
+       console.log(response)
+        setFieldLoading({...fieldLoading,phone:false})
+       setEditMode({...editMode,address:false})
+      }else{
+        setEditMode({...editMode,address:false}) 
       }
       
-      setEditMode(prev => ({
-        ...prev,
-        [field]: false
-      }));
+
+        }
+           
+      }
+      
+      // setEditMode(prev => ({
+      //   ...prev,
+      //   [field]: false
+      // }));
     } catch (error) {
       console.error(`Error saving ${field}:`, error);
     } finally {
@@ -128,11 +241,17 @@ let shipping=subTotal < 1000 ? 50 :0
     } catch (error) {
       console.log(error)
     }
+
+
+    
     
     // // Here you would typically call your Stripe integration
     // console.log('Proceeding to payment with:', { mobile, address });
     // // Example: redirectToStripeCheckout({ mobile, address });
   };
+  
+
+  console.log("check option",options.find((opt)=>opt.label === address.country))
 
   return (
     <div className='flex flex-col '>
@@ -175,22 +294,35 @@ let shipping=subTotal < 1000 ? 50 :0
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-medium text-gray-700">Phone number</label>
-                {mobile && !editMode.phone && (
+                {!editMode.phone && (
                   <button 
                     onClick={() => handleEditToggle('phone')}
                     className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                  >
-                    Edit
+                  >  
+                  {
+                    !mobile.trim() ? "ADD" :"Edit"
+                  }
+                    {/* Edit */}
                   </button>
                 )}
               </div>
               
-              {mobile && !editMode.phone ? (
+              { !editMode.phone ? (
                 <div className="flex items-center">
+                 
                   <svg className="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <p className="text-gray-700">{mobile}</p>
+                   {
+                    mobile ?
+                    (
+                       <p className="text-gray-700">{mobile}</p>
+                    ):(
+                      <p className="text-gray-700">enter mbile number</p>
+                    )
+
+                  }
+                  {/* <p className="text-gray-700">{mobile}</p> */}
                 </div>
               ) : (
                 <div className="flex">
@@ -204,11 +336,56 @@ let shipping=subTotal < 1000 ? 50 :0
                     required
                   />
                   <button
-                    onClick={() => handleSave('phone')}
+                  onClick={()=>{
+                   
+                    if(editMobile){
+                      setMobile(editMobile)
+                      
+                    }else{
+                      setMobile('')
+                    }
+                     setEditMode({...editMode,phone:false})
+                  }}
+                    disabled={fieldLoading.phone}
                     className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
-                    Save
+                    cancel
                   </button>
+                  <button
+                  disabled={fieldLoading.phone}
+                    onClick={() => handleSave('phone')}
+                    className={`ml-3 inline-flex items-center px-4 py-2 ${fieldLoading.phone ? 'bg-gray-300 text-sm cursor-not-allowed':'bg-indigo-600 hover:bg-indigo-700'} border border-transparent text-sm font-medium rounded-md shadow-sm text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                  >
+                     {fieldLoading.mobile ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-3 w-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      saving...
+                     
+                    </>
+                  ) : (
+                    ' Save '
+                  )}
+                  </button>
+                  
                 </div>
               )}
             </div>
@@ -323,42 +500,84 @@ let shipping=subTotal < 1000 ? 50 :0
         
         <div>
           <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country *</label>
-          <select
-            id="country"
-            name="country"
-            value={address.country || 'India'}
-            onChange={handleInputChange}
-            className="mt-1 block w-full h-8 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            required
-          >
-            <option value="United States">United States</option>
-            <option value="Canada">Canada</option>
-            <option value="Mexico">Mexico</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="India">India</option>
-          </select>
+           <Select
+        options={options}
+        name='country'
+        // value={address.country || ''}     
+        value={options.find(opt => opt.label === address.country)}  // map code back to object
+   
+         onChange={(val) =>         // val = selected country object
+    handleInputChange({
+      target: {              // we create a fake event
+        name: "country",     // field name
+        value: val             
+      }  
+    }) 
+  }
+        placeholder="Select your country"
+      />
+          
         </div>
         
         <div className="flex justify-end space-x-3">
           <button
             onClick={() => {
-              if (!address?.street) {
+              if (editAddress) {  
                 // If no address exists, cancel should hide the form
-                setEditMode({...editMode, address: false});
+                setAddress(editAddress)
+                
               } else {
-                // If editing existing address, return to view mode
-                setEditMode({...editMode, address: false});
+                setAddress({
+                  street: "",
+                  city: "",
+                  district: "",
+                  state: "",
+                  pin: "",
+                  country: "", // Default country
+                });
+                // setEditMode({ ...editMode, address: false });
               }
+              setEditMode({...editMode, address: false});
             }}
+            disabled={fieldLoading.address}
             className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Cancel
           </button>
           <button
+          disabled={fieldLoading.address}
             onClick={() => handleSave('address')}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`inline-flex items-center px-4 py-2 border border-transparent ${fieldLoading.address ?'bg-gray-300 cursor-not-allowed' :'bg-indigo-600 hover:bg-indigo-700 '} text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
           >
-            {address?.street ? "Update Address" : "Save Address"}
+            {fieldLoading.address ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-3 w-3 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      saving...
+                     
+                    </>
+                  ) : (
+                     editAddress ? "Update " : "Save "
+                  )}
+           
           </button>
         </div>
       </div>

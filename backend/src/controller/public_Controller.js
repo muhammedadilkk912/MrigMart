@@ -41,6 +41,8 @@ const products_by_category=async(req,res)=>{
     id=new mongoose.Types.ObjectId(id)
 
     try {
+      const pro=await productModel.find({category:new mongoose.Types.ObjectId("68a45b7fdba16c296f5934f7")})
+      console.log(pro)
 //        const products = await productModel.aggregate([ 
 //   {
 //     $match: {
@@ -104,9 +106,10 @@ const products=await productModel.aggregate([
   }
 }
 ])
+console.log("products=",products)
 
 // console.log("pp=",products[0].products)
-let c=products[0].products
+let c=products[0]?.products
 for (let index = 0; index < c.length; index++) {
 console.log("avrage rating",c[index].averageRating)
   

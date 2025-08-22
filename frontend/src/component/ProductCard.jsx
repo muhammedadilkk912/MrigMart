@@ -11,6 +11,7 @@ const ProductCard = ({ product }) => {
   const navigate=useNavigate()
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [isHover,setIsHover]=useState(false)
 
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
@@ -52,9 +53,12 @@ const ProductCard = ({ product }) => {
 
       {/* Product Image */}
       <Link to={`/product/${product?._id}`} className="block">
-        <div className="relative aspect-square">
+        <div
+        onMouseEnter={()=>setIsHover(true)}  
+        onMouseLeave={()=>setIsHover(false)}
+         className="relative aspect-square">
           <img
-            src={product?.images[0] || '/placeholder-product.jpg'}
+            src={isHover ? product?.images[1] :product?.images[0] || '/placeholder-product.jpg'}
             alt={product?.name}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             loading="lazy"
@@ -95,16 +99,16 @@ const ProductCard = ({ product }) => {
         <div className="mb-3">
           {product.discount > 0 ? (
             <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <span className="font-bold text-gray-900">${product.discountprice?.toFixed(2)}</span>
+              <span className="font-bold text-gray-900">₹{product.discountprice?.toFixed(2)}</span>
               <span className="text-sm text-gray-500 line-through">${product.price?.toFixed(2)}</span>
             </div>
           ) : (
-            <span className="font-bold text-gray-900">${product.price?.toFixed(2)}</span>
-          )}
+            <span className="font-bold text-gray-900">₹{product.price?.toFixed(2)}</span>
+          )}   
         </div>
 
         {/* Add to Cart Button */}
-        <button
+        <button     
           onClick={()=>handleAddToCart(product?._id)}
           disabled={isAddedToCart}
           className={`w-full text-sm py-1 px-1 sm:px-0 sm:py-2 rounded-md flex items-center justify-center gap-2 sm:gap-2 transition-colors ${

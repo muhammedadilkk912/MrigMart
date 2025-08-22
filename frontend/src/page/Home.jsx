@@ -21,6 +21,7 @@ const HomePage = () => {
   const initialVisibleCount = 5;
   const [wishlist,setWishlist]=useState([])
   const [loading,setLoading]=useState(false)   
+  const [isHovered, setIsHovered] = useState(false);
   console.log("wishlist=",wishlist)
   // Sample data - replace with your actual data
   const categories = {
@@ -250,13 +251,17 @@ const HomePage = () => {
                     <div
                       onClick={() => navigate(`/product/${product._id}`)}
                       key={product.id}
-                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+                     
+                      className="bg-white rounded-lg group-hover:scale-110 group-hover:shadow-xl shadow-md overflow-hidden hover:shadow-lg transition-transform duration-300 ease-in-out"
                     >
-                      <div className="relative">
+                      <div 
+                       onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      className="relative">
                         <img
-                          src={product.images[0] || "/banner.jpg"}
+                          src={ isHovered ?product.images[1] : product.images[0] || "/banner.jpg"}
                           alt={product.name}
-                          className="w-full h-64 object-cover"
+                          className="w-full transition-transform duration-300 ease-in-out hover:scale-110 h-64 object-cover"
                         />
                         {/* <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold flex items-center">
                         ⭐ {product.rating}
@@ -392,7 +397,7 @@ const HomePage = () => {
                         <img
                           src={product.images[0] || "/banner.jpg"}
                           alt={product.name}
-                          className="absolute h-full w-full object-cover group-hover:opacity-90 transition-opacity"
+                          className="absolute h-full w-full object-cover group-hover:scale-110 transition-opacity"
                         />
                         {/* Items Sold */}
                         <span className="absolute bottom-3 right-3 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded-full">

@@ -9,6 +9,7 @@ import { showLoading,hideLoading } from "../Redux/LoadingSlic";
 import Layout from "../component/Layout";
 
 
+
 const check_Out = () => {
     const {id}=useParams()
     const dispatch=useDispatch()
@@ -32,6 +33,7 @@ const check_Out = () => {
     sellerId:''
   })
   const [isloading,setIsloading]=useState(false)
+
 
 
  
