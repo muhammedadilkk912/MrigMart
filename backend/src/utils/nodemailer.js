@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config()
  // Ensure environment variables are loaded
 import nodemailer from 'nodemailer'
+console.log("email pass=",process.env.EMAIL_PASS)
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -34,6 +35,7 @@ const sendMail = async (to, subject, text) => {
     console.log("✅ Email sent:", info.response);
   } catch (error) {
     console.error("❌ Error sending email:", error);
+    return res.status(500).json({message:'internal server error'})
   }
 };
 

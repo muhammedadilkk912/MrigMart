@@ -5,8 +5,8 @@ import JWT from 'jsonwebtoken'
 
 const router=express.Router()
 
-
- router.post('/signup',signup)
+  
+ router.post('/signup',signup) 
  router.post('/verifyOtp',verifyOtp)
  router.post('/resendotp',resendotp)  
  router.post('/signin',signin)

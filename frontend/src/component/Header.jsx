@@ -5,6 +5,7 @@ import Alert from './alert';
 import { useSelector,useDispatch } from 'react-redux';
 import { RiUser3Line } from "react-icons/ri";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import {setLogout} from '../Redux/AuthSlic'
 
 
 import {setSearch} from '../Redux/SearchSlic'
@@ -22,7 +23,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 const [searchText, setSearchText] = useState('');
   const location = useLocation();
-  const [logout,setLogout]=useState(false)
+  const [logout_Cl,setLogout_Cl]=useState(false)
   const navigate=useNavigate()
   let path=location.pathname
   console.log("path name",)
@@ -52,6 +53,8 @@ const [searchText, setSearchText] = useState('');
     }
    
   }
+
+  console.log("authentication status=",isauthenticate)
 
   const handleSearch=(e)=>{
     // console.log("inside th e handle search",search)
@@ -91,24 +94,26 @@ const [searchText, setSearchText] = useState('');
    
     
     if(val){
-      
+      dispatch(setLogout())
+       
 
      if(path === '/' || allowedUrl.includes(cleanPath[1])){
-      setLogout(false)
+      setLogout_Cl(false)
     }else{
       navigate('/')
-      setLogout(false)
+      setLogout_Cl(false) 
     }
        
     }else{
       console.log("elese")
-        setLogout(false)
+        setLogout_Cl(false)
     }
+   
     
     
 
   }
-  const handleKeyDown=(e)=>{
+  const handleKeyDown=(e)=>{  
     if (e.key === 'Enter') {
     handleSearch();
   }
@@ -214,9 +219,9 @@ const [searchText, setSearchText] = useState('');
             >
               Home
             </NavLink>
-            
-            
-            <NavLink 
+            {
+              isauthenticate && (
+                <NavLink 
               to="/cart" 
               className={({ isActive }) => 
                 `flex items-center text-gray-700 hover:text-blue-600 ${isActive ? 'text-blue-600' : ''}`
@@ -225,6 +230,12 @@ const [searchText, setSearchText] = useState('');
               <FiShoppingCart size={20} className="mr-1" />
               Cart
             </NavLink>
+
+              )
+            }
+            
+            
+            
             
             <a 
               href='https://mrig-mart-seller.vercel.app/'
@@ -289,7 +300,7 @@ const [searchText, setSearchText] = useState('');
                     className=" w-full text-left px-4    py-2 text-red-500 hover:bg-gray-100"
                     onClick={()=>{
                       toggleDropdown(),
-                      setLogout(true)
+                      setLogout_Cl(true)
                     }}
                   >
                     Logout
@@ -321,8 +332,9 @@ const [searchText, setSearchText] = useState('');
               >
                 Home
               </NavLink>
-              
-              <NavLink 
+              {
+                isauthenticate &&(
+                  <NavLink 
                 to="/cart" 
                 onClick={toggleMenu}
                 className={({ isActive }) => 
@@ -332,6 +344,11 @@ const [searchText, setSearchText] = useState('');
                 {/* <FiShoppingCart size={18} className="mr-2" /> */}
                 Cart
               </NavLink>
+                  
+                )
+              }
+              
+              
               
               <a 
               href='https://mrig-mart-seller.vercel.app/'
@@ -382,7 +399,7 @@ const [searchText, setSearchText] = useState('');
                     className=" w-full text-left px-4    py-2 text-red-500 hover:bg-gray-100"
                     onClick={()=>{
                       setIsMenuOpen(false),
-                      setLogout(true)
+                      setLogout_Cl(true)
                     }}
                   >
                     Logout
@@ -420,7 +437,7 @@ const [searchText, setSearchText] = useState('');
         )}
       </div>
       {
-        logout&&(
+        logout_Cl&&(
           <Alert
           onConfirm={handlelogout}
           />

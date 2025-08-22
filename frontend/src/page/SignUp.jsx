@@ -114,6 +114,16 @@ const SignUp = () => {
 
 
   }
+    const handleGoogleSignUp = () => {
+     const baseURL = import.meta.env.VITE_API_BASE_URL;
+    // console.log("baseURL=",baseURL)
+    // https://mrigmart-backend.onrender.com/api/auth/google/callback
+    // return null
+
+  window.open(`${baseURL}/auth/google`, "_self");
+  //  window.location.href=`${baseURL}/auth/google`
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8">{
@@ -292,6 +302,7 @@ const SignUp = () => {
           <div className="mt-6">
             <button
               type="button"
+              onClick={()=>handleGoogleSignUp()}
               className="w-full inline-flex justify-center items-center py-2 px-4 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ABBB19]"
             >
               <FcGoogle className="h-5 w-5 mr-2" />

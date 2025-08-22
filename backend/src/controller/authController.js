@@ -26,19 +26,30 @@ const signup = async (req, res) => {
     });
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
     const hashedPassword = await bcrypt.hash(password, 10);
+       const emBody = `
+      <p>Welcome to PetCare Platform!</p>
+      <p>We are very happy to have you as part of us.</p>
+      <p>Your verification code is: <strong>${otp}</strong></p>
+    `;
 
     if (user) {
       if (user.isVerified) {
         return res.status(400).json({ message: "Email already exists" });
       } else {
         // update existing unverified user
+      
+
         user.username = username;
         user.password = hashedPassword;
         user.otp = otp;
         user.otpExpires = otpExpires; // or 'Inactive' if you prefer
+         
+        await sendMail(email, 'Sign Up Verification', emBody);
+
         await user.save();
       }
     } else {
+      await sendMail(email, 'Sign Up Verification', emBody);
       // create a new user
       const newUser = new userModel({
         email,
@@ -53,12 +64,8 @@ const signup = async (req, res) => {
       await newUser.save();
     }
 
-    const emBody = `
-      <p>Welcome to PetCare Platform!</p>
-      <p>We are very happy to have you as part of us.</p>
-      <p>Your verification code is: <strong>${otp}</strong></p>
-    `;
-    await sendMail(email, 'Sign Up Verification', emBody);
+ 
+    
 
     return res.status(200).json({ message: 'OTP sent to your registered email' });
 
