@@ -11,7 +11,7 @@ import { Toaster } from "react-hot-toast";
 import SignUp from "./page/SignUp";
 import { useEffect } from "react";
 import axiosInstance from "./confiq/Axio";
-import {setLogin} from './Redux/AuthSlic'
+import {setLogin,setWishlist} from './Redux/AuthSlic'
 import TokenExpired from "./page/TokenExpired";
 import Wishlist from "./page/Wishlist";
 import Checkoutpage from "./page/Checkoutpage";
@@ -35,11 +35,13 @@ const App = () => {
        checkauth()
      }
   },[isAuthenticate])
-  const checkauth=async(req,res)=>{
+  const checkauth=async()=>{
     try {
       const response=await axiosInstance.get('/auth/checkauth')
       console.log("check auth=",response)
       dispatch(setLogin())
+      console.log("whislist items=",response?.data?.wishlist)
+      dispatch(setWishlist(response?.data?.wishlist))
 
     } catch (error) {
       console.log("check auth=",error)
@@ -56,7 +58,7 @@ const App = () => {
         </div>
       )}
       <Toaster />
-      <ToastContainer position='top-center'/>
+      <ToastContainer  position='top-center'/>
       <ScrollToTop/>
 
       {/* App Routes */}

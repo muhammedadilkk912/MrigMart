@@ -151,6 +151,8 @@ const getproduct=async(req,res)=>{
 }
 
 const similiarProduct=async(req,res)=>{
+
+  const token=
   console.log("inside the similiar product");
   // return null
   
@@ -496,6 +498,7 @@ const bestsellerproducts=async(req,res)=>{
         $limit:Number(limit)
       }
      ])
+     
   
   res.status(200).json({message:'best seller products got it',products})
   } catch (error) {

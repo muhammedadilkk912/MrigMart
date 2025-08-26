@@ -12,7 +12,8 @@ import sendMail from '../utils/nodemailer.js'
 
 const wishlist=async(req,res)=>{
     try {
-        const wishlist=await wishlistModel.find().populate('product')
+        const wishlist=await wishlistModel.find({user:req.user.id}).populate('product')
+        console.log("wishlist=",wishlist.length)
         if(wishlist.length === 0){
             return res.status(400).json({message:"nothing added in wishlist"})
         }
@@ -36,7 +37,7 @@ const addToWishlist=async(req,res)=>{
             return res.status(400).json({message:'product not found'})
         }
         const oldwishlist=await wishlistModel.findOne({product:id})
-        console.log("existing wishlist=",oldwishlist)
+        console.log("existing wishlist=",oldwishlist)  
        
         if(oldwishlist){  
             return res.status(201).json({message:'already added'})
@@ -56,6 +57,7 @@ const addToWishlist=async(req,res)=>{
 }
 
 const deletewishlist=async(req,res)=>{
+    console.log("inside the delete wishlist")
     const{id}=req.params
     if(!id){
         return res.status(400).json({message:"id not found"})
@@ -65,6 +67,21 @@ const deletewishlist=async(req,res)=>{
         console.log(wishlist)
         res.status(200).json({message:'item deleted successfully'})
         
+    } catch (error) {
+        return res.status(500).json({message:'internal server error'})
+    }
+}
+const delete_item_wishlist =async(req,res)=>{
+    console.log("inside the delete wishlist")
+    const{id}=req.params
+    if(!id){
+        return res.status(400).json({message:"id not found"})
+    }
+    try {
+        const wishlist=await wishlistModel.deleteOne({product:id})
+        console.log(wishlist)
+        res.status(200).json({message:'item deleted successfully'})
+         
     } catch (error) {
         return res.status(500).json({message:'internal server error'})
     }
@@ -87,10 +104,10 @@ const addToCart=async(req,res)=>{
   if (cart) {
     // Check if the product is already in the cart
     const itemIndex = cart.items.findIndex(item => item.product == productId);
-    console.log("item index=",itemIndex)
+   
     
     if (itemIndex > -1) {
-        if(cart.items[itemIndex].quantity<= product.stcok){
+        if(cart.items[itemIndex].quantity <=  product.stock){
                cart.items[itemIndex].quantity += 1;
         }else{
             return res.status(400).json({ message: 'Quantity exceeds available stock' });
@@ -99,6 +116,7 @@ const addToCart=async(req,res)=>{
       // Product exists in cart → update quantity
     
     } else {
+        console.log("inside the new cart product")
        if(product.stock === 0){
          return res.status(400).json({ message: 'Product is out of stock' });
        }
@@ -554,5 +572,5 @@ const updateProfile=async(req,res)=>{
 }
 
 export{wishlist,addToWishlist,deletewishlist,deleteCartItem ,updateAddress,addToCart,getCarts ,update_Cartquantity,getvalidcartitems,getaddress,
-    updateuser,orders,Addrivew,getreviews,getProduct,getDetails,logout,getAccount,updateAddress_ac,otpSend,updateProfile } 
+    updateuser,orders,Addrivew,getreviews,getProduct,getDetails,logout,getAccount,updateAddress_ac,otpSend,updateProfile,delete_item_wishlist } 
 

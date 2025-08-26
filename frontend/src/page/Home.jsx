@@ -8,18 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 import {toast} from 'react-hot-toast'
 import { MdOutlineStar } from "react-icons/md";
 import { showLoading,hideLoading } from "../Redux/LoadingSlic";
+import {AddToWishlist,RemoveToWishlist} from "../Redux/AuthSlic"
 
 
 const HomePage = () => {
   const dispatch=useDispatch()
   const isauthenticate=useSelector((state)=>state.auth.isAuthenticate)
+  const wishlist=useSelector((state)=>state.auth.wishlist) 
   const navigate = useNavigate();
   const [category, setCategory] = useState([]);
   const [featuredProducts, setFeaturedPrdoucts] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
   const [visibleCategories, setVisibleCategories] = useState(5); // Initial count
   const initialVisibleCount = 5;
-  const [wishlist,setWishlist]=useState([])
+  // const [wishlist,setWishlist]=useState([])
   const [loading,setLoading]=useState(false)   
   const [isHovered, setIsHovered] = useState(false);
   console.log("wishlist=",wishlist)
@@ -76,7 +78,9 @@ const HomePage = () => {
     }
   };
   console.log("category=", category);
-  const addwhishlist=async(id,e)=>{
+
+
+  const addwhishlist=async(id,e,val)=>{
       e.stopPropagation(); // prevent bubbling up to parent onClick
     if(!isauthenticate){
      navigate('/login')
@@ -84,11 +88,19 @@ const HomePage = () => {
     }
 
     try {
-      const response=await axiosInstance.post(`/user/addtowishlist/${id}`)
+      if(!val){
+         const response=await axiosInstance.post(`/user/addtowishlist/${id}`)
       toast.success(response?.data?.message)
-      setWishlist([...wishlist,id])
+      dispatch(AddToWishlist(id))
+      }else{
+         const response=await axiosInstance.delete(`/user/deleteItemsInWishlist/${id}`)   
+      toast.success('deleted product in wishlist')
+      dispatch(RemoveToWishlist(id))
+      }
+     
 
     } catch (error) {
+      toast.error(error?.response?.data?.message)
       console.log(error)
     }
 
@@ -97,15 +109,24 @@ const HomePage = () => {
   const addToCart=async(id,e)=>{
     e.stopPropagation()
     try {
+       dispatch(showLoading())
       const response=await axiosInstance.post('/user/addToCart',{productId:id})
-      console.log(response)
+      console.log("add to cart response",response)
       toast.success(response?.data?.message)
     } catch (error) {
-      console.log(error)
+      console.log("add to cart error ",error)
+      console.log("error=",error.response.data.message)
+      toast.error(error?.response?.data?.message)
       
+    }finally{
+       dispatch(hideLoading())
     }
 
   }
+
+  // const check_wishlit=(id)=>{
+  //  return wishlist.includes(id)
+  // }
 
   return (
     <div className="flex flex-col overflow-x-hidden min-h-screen">
@@ -274,7 +295,7 @@ const HomePage = () => {
                           </h3>
                           <button
                             type="button"
-                            onClick={(e) => addwhishlist(product._id, e)}
+                            onClick={(e) => { wishlist.includes(product._id) ?addwhishlist(product._id, e,true):addwhishlist(product._id, e,false)}}
                           >
                             <FaRegHeart
                               className={`${
@@ -370,7 +391,14 @@ const HomePage = () => {
                       {/* Wishlist Heart */}
                       <button
                         className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm rounded-full p-2 z-10 hover:bg-red-100 transition-all"
-                        onClick={(e) => addwhishlist(product._id, e)}
+                        onClick={(e) =>{
+                           wishlist.includes(product._id)?
+                           addwhishlist(product._id, e,true)
+                          :addwhishlist(product._id, e,false)
+
+                        }
+                          
+                           }
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"

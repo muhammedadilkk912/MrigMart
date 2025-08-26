@@ -5,7 +5,7 @@ import {toast} from 'react-hot-toast'
 import {  Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../confiq/Axio'
 import {useDispatch} from 'react-redux'
-import {setLogin}  from '../Redux/AuthSlic'
+import {setLogin,setWishlist}  from '../Redux/AuthSlic'
 
 const Login = () => {
   const dispatch=useDispatch()
@@ -62,7 +62,14 @@ return true
           setLoading(true)
           const response=await axiosInstance.post('/auth/signin',form)
           console.log(response)
-          dispatch(setLogin())
+          if(response?.data?.whislist.length > 0){
+            dispatch(setWishlist(response?.data?.whislist))
+            
+
+          }
+            
+        
+          dispatch(setLogin()) 
           navigate('/')
           toast.success(response?.data?.message)
          } catch (error) {

@@ -7,7 +7,10 @@ import ProductCard from '../component/ProductCard';
 import { showLoading,hideLoading } from "../Redux/LoadingSlic";
 import {useDispatch,useSelector} from 'react-redux'
 import { FaStar } from "react-icons/fa6";
-import {toast  } from 'react-toastify'
+import { toast as toastifyToast } from 'react-toastify';
+import { toast as hotToast } from 'react-hot-toast';
+
+
 import Layout from "../component/Layout";
 import Review from "../component/Review";
 
@@ -96,11 +99,14 @@ const Productpage = () => {
        console.log("product id=",productId)
        
        try {
+         dispatch(showLoading())
         const response=await axiosInstance.post('/user/addToCart',{productId})
-        toast.success(response?.data?.message)
+        hotToast.success(response?.data?.message)
        } catch (error) {
         console.log(error)
-        toast.error(error?.response?.data?.message)
+        hotToast.error(error?.response?.data?.message)
+       }finally{
+         dispatch(hideLoading())
        }
  }
 
@@ -136,7 +142,7 @@ const handleReview=(rev)=>{
   const handleBuynow=(id)=>{
     console.log('inside handle buy now')
     if(!isauthenticate){
-      toast.warn('please Login ')
+      toastifyToast.warn('please Login ')
       navigate('/login')
       
     }else{

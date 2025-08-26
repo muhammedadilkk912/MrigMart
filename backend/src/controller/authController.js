@@ -3,6 +3,7 @@ import otp_generator from 'otp-generator'
 import bcrypt from 'bcrypt'
 import sendMail from '../utils/nodemailer.js'
 import jwt from 'jsonwebtoken'
+import wishlistModel from '../model/wishlist.model.js'
 
 const signup = async (req, res) => {
   console.log("sign in");
@@ -132,6 +133,20 @@ const signin=async(req,res)=>{
             expiresIn: "5h",
         }); 
         
+        let whislist_Data=await wishlistModel.find({user:user._id})
+         console.log("whislist=",whislist_Data)
+        let whislist=[]
+        if(whislist_Data.length > 0){
+            whislist_Data.forEach((items)=>{
+              whislist.push(items.product)
+            })
+        }
+
+        // if(!whislist.length > 0){
+
+        // } 
+        
+
         // Set the JWT in a cookie 
         res.cookie("token", token, {
           httpOnly: true,
@@ -140,7 +155,7 @@ const signin=async(req,res)=>{
           sameSite:process.env.NOD_ENV==='production'? "none":'', // Allows cross-site cookie
           maxAge: 5 * 60 * 60 * 1000, // 5 hour
         });
-        res.status(200).json({message:'login successfull'})
+        res.status(200).json({message:'login successfull',whislist})
     } catch (error) {
         console.log(error)
         return res.status(500).json({message:'internal server error'})
@@ -174,25 +189,42 @@ const resendotp=async(req,res)=>{
 }
 
 const checkauth=async(req,res)=>{
-    const token =req?.cookies?.token
-    console.log("token=",token)
-    if(!token){
-        return res.status(400).json({message:'token expired'})
+     const token = req?.cookies?.token;
+  console.log("token=", token);
+
+  if (!token) {
+    return res.status(400).json({ message: "token expired" });
+  }
+
+  let user;
+  try {
+    user = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("this user=", user);
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+
+  try {
+    // fetch wishlist for this user
+    const wishlist_Data = await wishlistModel
+      .find({ user: user.id })
+     
+
+    let wishlist = [];
+    if (wishlist_Data.length > 0) {
+      wishlist_Data.forEach((item) => {
+        wishlist.push(item.product);
+      });
     }
-    const user=jwt.verify(token,process.env.JWT_SECRET)
-    console.log('user=',user) 
-    // let status
-    // try {
-    //     const res=await sellerModel.findOne({_id:seller.id})
-    //     console.log("response=",res)  
-    //     status=res.status
-    // } catch (error) {
-    //     return res.status(500).json({message:"internal server error"})
-        
-    // }
-    res.status(200).json({message:"atuhentication checking successfull"})
 
-
+    return res.status(200).json({
+      message: "Authentication checking successful",
+      wishlist,
+    });
+  } catch (error) {
+    console.error("Error fetching wishlist:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 const forgetpassword=async(req,res)=>{

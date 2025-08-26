@@ -1,7 +1,7 @@
 import express from "express";
 import protectRoute from '../middleware/protectRoute.js'
 import {wishlist,addToWishlist,deletewishlist,addToCart,getCarts,update_Cartquantity,getvalidcartitems ,getaddress,updateuser,updateAddress,
-        deleteCartItem ,orders,Addrivew ,getreviews,getProduct,getDetails,logout,getAccount,updateAddress_ac,otpSend,updateProfile
+        deleteCartItem ,orders,Addrivew ,getreviews,getProduct,getDetails,logout,getAccount,updateAddress_ac,otpSend,updateProfile,delete_item_wishlist
 } from '../controller/userController.js'
 import {createCheckoutSession} from '../controller/PaymentController.js'
  
@@ -12,6 +12,7 @@ const router=express.Router()
 router.get('/wishlist',protectRoute,wishlist)
 router.post('/addtowishlist/:id',protectRoute,addToWishlist)
 router.delete('/deletewishlist/:id',protectRoute,deletewishlist)
+router.delete('/deleteItemsInWishlist/:id',protectRoute,delete_item_wishlist)
 router.post('/addToCart',protectRoute,addToCart)
 router.get('/getCarts',protectRoute,getCarts)
 router.delete('/delete/cartitem/:id',protectRoute,deleteCartItem)
