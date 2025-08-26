@@ -9,6 +9,8 @@ import {toast} from 'react-hot-toast'
 import { MdOutlineStar } from "react-icons/md";
 import { showLoading,hideLoading } from "../Redux/LoadingSlic";
 import {AddToWishlist,RemoveToWishlist} from "../Redux/AuthSlic"
+import { FaHeart } from "react-icons/fa";
+
 
 
 const HomePage = () => {
@@ -88,6 +90,7 @@ const HomePage = () => {
     }
 
     try {
+      dispatch(showLoading())
       if(!val){
          const response=await axiosInstance.post(`/user/addtowishlist/${id}`)
       toast.success(response?.data?.message)
@@ -102,6 +105,8 @@ const HomePage = () => {
     } catch (error) {
       toast.error(error?.response?.data?.message)
       console.log(error)
+    }finally{
+      dispatch(hideLoading())
     }
 
   }
@@ -297,14 +302,16 @@ const HomePage = () => {
                             type="button"
                             onClick={(e) => { wishlist.includes(product._id) ?addwhishlist(product._id, e,true):addwhishlist(product._id, e,false)}}
                           >
-                            <FaRegHeart
-                              className={`${
-                                wishlist.includes(product._id)
-                                  ? "text-red-500"
-                                  : "text-gray-700"
-                              }`}
+                            {
+                              wishlist.includes(product._id) ?
+                              <FaHeart size={20} className="text-red-500"/> :
+                              <FaRegHeart
+                              
                               size={20}
                             />
+
+                            }
+                            
                           </button>
                         </div>
 

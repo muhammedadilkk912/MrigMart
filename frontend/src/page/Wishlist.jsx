@@ -4,6 +4,7 @@ import { FaTrash, FaShoppingCart, FaCartPlus } from 'react-icons/fa';
 import axiosInstance from '../confiq/Axio';
 import { useDispatch,useSelector } from 'react-redux';
 import { showLoading,hideLoading } from '../Redux/LoadingSlic';
+import { RemoveToWishlist } from '../Redux/AuthSlic';
 import Layout from '../component/Layout';
 import { toast } from 'react-hot-toast';
 const WishlistPage = () => {
@@ -15,7 +16,11 @@ const WishlistPage = () => {
   console.log("wishlist=",wishlistItems)
 
   useEffect(()=>{
-    const getwhislist=async()=>{
+   
+    getwhislist()
+  },[])
+  
+   const getwhislist=async()=>{
         try {
             dispatch(showLoading())
             const response=await axiosInstance.get('/user/wishlist')
@@ -27,19 +32,18 @@ const WishlistPage = () => {
             dispatch(hideLoading())
         }
     }
-    getwhislist()
-  },[])
-
-
+    
   const removeFromWishlist = (id) => {
     setWishlistItems(prevItems => prevItems.filter(item => item._id !== id));
   };
-  const  handleDelete=async(id)=>{
+
+  const  handleDelete=async(id,Pid)=>{
 try {
     dispatch(showLoading())
     const response=await axiosInstance.delete(`/user/deletewishlist/${id}`)
     console.log(response)
     console.log("id=",id)
+    dispatch(RemoveToWishlist(Pid))
     removeFromWishlist(id)
 } catch (error) {
     console.log('error=',error)
@@ -136,7 +140,7 @@ try {
                   {/* Actions */}
                   <div className="flex items-center gap-2  justify-end">
                     <button
-                      onClick={() => handleDelete(item._id)}
+                      onClick={() => handleDelete(item._id,item.product._id)}
                       className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
                       aria-label="Remove"
                     >
