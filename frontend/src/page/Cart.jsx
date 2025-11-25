@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { setCart } from "../Redux/CartSlic.js";
 import { toast } from "react-hot-toast";
 import Layout from "../component/Layout.jsx";
+import { removeCartItem } from "../Redux/CartSlic.js";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -90,6 +91,7 @@ const CartPage = () => {
       const response = await axiosInstance.delete(
         `/user/delete/cartitem/${productId}`
       );
+      dispatch(removeCartItem(productId))
 
       console.log("cart remove", response);
       toast.success(response?.data?.message);

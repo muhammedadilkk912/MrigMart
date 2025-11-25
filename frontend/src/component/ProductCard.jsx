@@ -5,6 +5,7 @@ import { MdOutlineStar } from "react-icons/md";
 import { showLoading,hideLoading } from '../Redux/LoadingSlic';
 import { useDispatch,useSelector } from 'react-redux';
 import {AddToWishlist,RemoveToWishlist} from "../Redux/AuthSlic"
+import { setCartTotal } from '../Redux/CartSlic';  
 // import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 
@@ -34,6 +35,7 @@ const ProductCard = ({ product }) => {
       dispatch(showLoading())
       const response=await axiosInstance.post('/user/addToCart',{productId:id})
       console.log(response)
+      dispatch(setCartTotal(response?.data?.cart)) 
       toast.success(response?.data?.message)
       setIsAddedToCart(true)
     } catch (error) {

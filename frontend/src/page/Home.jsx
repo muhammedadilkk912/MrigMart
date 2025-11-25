@@ -10,7 +10,8 @@ import { MdOutlineStar } from "react-icons/md";
 import { showLoading,hideLoading } from "../Redux/LoadingSlic";
 import {AddToWishlist,RemoveToWishlist} from "../Redux/AuthSlic"
 import { FaHeart } from "react-icons/fa";
-
+import { setCartTotal } from "../Redux/CartSlic";
+import Chatwidget from "../component/Chatwidget";
 
 
 const HomePage = () => {
@@ -116,6 +117,7 @@ const HomePage = () => {
     try {
        dispatch(showLoading())
       const response=await axiosInstance.post('/user/addToCart',{productId:id})
+      dispatch(setCartTotal(response?.data?.cart))
       console.log("add to cart response",response)
       toast.success(response?.data?.message)
     } catch (error) {
@@ -213,7 +215,7 @@ const HomePage = () => {
                         ? setVisibleCategories(initialVisibleCount)
                         : setVisibleCategories(category.length)
                     }
-                    className="inline-flex items-center justify-center bg-gray-400 rounded text-white py-1   px-2  hover:shadow-xl transition-colors"
+                    className="inline-flex items-center justify-center bg-blue-500 rounded text-white py-1   px-2  hover:shadow-xl transition-colors"
                   >
                     {category.length === visibleCategories ? (
                       <span className="font-medium">Close categories</span>
@@ -504,6 +506,10 @@ const HomePage = () => {
                 )}
               
             </div>
+            {/* <div className="bg-yellow-200 h-10 w-10"> */}
+              {/* <Chatwidget/> */}
+
+            {/* </div> */}
           </section>
 
           {/* Newsletter Section (Bonus) */}

@@ -12,6 +12,7 @@ import {setSearch} from '../Redux/SearchSlic'
 
 
 const Header = () => {
+  const cartTotal=useSelector((state)=>state.cart.CartTotal)
   const dispatch=useDispatch()
   const loca=useLocation()
   // const {q}=useParams()
@@ -224,10 +225,21 @@ const [searchText, setSearchText] = useState('');
                 <NavLink 
               to="/cart" 
               className={({ isActive }) => 
-                `flex items-center text-gray-700 hover:text-blue-600 ${isActive ? 'text-blue-600' : ''}`
+                `flex items-center  hover:text-blue-600 ${isActive ? 'text-blue-600' : 'text-gray-700'}`
               }
             >
+                  <div className="relative mr-1">
+                    
+
               <FiShoppingCart size={20} className="mr-1" />
+              {
+                cartTotal.length > 0 &&  <span className='bg-red-500 text-xs w-4 h-4 flex justify-center items-center  absolute -top-1 left-2 text-white font-semibold  rounded-full'>
+              { cartTotal.length}
+
+              </span>
+              }
+             
+              </div>
               Cart
             </NavLink>
 
@@ -322,7 +334,7 @@ const [searchText, setSearchText] = useState('');
         {/* Mobile Menu (only shown when toggled) */}
         {isMenuOpen && (
           <div className="md:hidden py-2 border-t">
-            <nav className="flex flex-col space-y-3">
+            <nav className="flex flex-col  space-y-3">
               <NavLink 
                 to="/" 
                 onClick={toggleMenu}
@@ -338,11 +350,17 @@ const [searchText, setSearchText] = useState('');
                 to="/cart" 
                 onClick={toggleMenu}
                 className={({ isActive }) => 
-                  `px-3 py-2 flex items-center ${isActive ? 'text-blue-600 font-medium' : 'text-gray-700'}`
+                  `px-3 py-2 flex items-center  justify-between ${isActive ? 'text-blue-600 font-medium' : 'text-gray-700'}`
                 }
               >
                 {/* <FiShoppingCart size={18} className="mr-2" /> */}
                 Cart
+                 {
+                cartTotal.length > 0 &&  <span className='bg-red-500 text-xs w-5 h-5 flex justify-center items-center   text-white font-semibold  rounded-full'>
+              { cartTotal.length}
+
+              </span>
+              }
               </NavLink>
                   
                 )
@@ -350,16 +368,8 @@ const [searchText, setSearchText] = useState('');
               
               
               
-              <a 
-              href='https://mrig-mart-seller.vercel.app/'
-              target='_blank'
-                className={({ isActive }) => 
-                  `px-3 py-2 ${isActive ? 'text-blue-600 font-medium' : 'text-gray-700'}`
-                }
-              >
-                Become Seller
-              </a>
-              
+             
+                
               {/* <div className="mt-2 ml-6 bg-gray-50 rounded-md py-1"> */}
                     <NavLink 
                       to="/account" 
@@ -391,6 +401,17 @@ const [searchText, setSearchText] = useState('');
                     >
                       Wishlist
                     </NavLink>
+                     <a 
+              href='https://mrig-mart-seller.vercel.app/'
+              target='_blank'
+              className='hover:bg-gray-100 py-2 text-gray-700 font-semibold px-3'
+              
+                // className={({ isActive }) => 
+                //   `px-3 py-2 bg-teal-400  ${isActive ? 'text-blue-600    font-medium' : 'text-red-700'}`
+                // }
+              >
+                Become Seller
+              </a>
                     <div className="border-t border-gray-200 my-1"></div>
                     {
                     isauthenticate?(

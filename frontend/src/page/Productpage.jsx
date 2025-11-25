@@ -9,6 +9,7 @@ import {useDispatch,useSelector} from 'react-redux'
 import { FaStar } from "react-icons/fa6";
 import { toast as toastifyToast } from 'react-toastify';
 import { toast as hotToast } from 'react-hot-toast';
+import { setCartTotal } from "../Redux/CartSlic";
 
 
 import Layout from "../component/Layout";
@@ -101,6 +102,7 @@ const Productpage = () => {
        try {
          dispatch(showLoading())
         const response=await axiosInstance.post('/user/addToCart',{productId})
+        dispatch(setCartTotal(response?.data?.cart))  
         hotToast.success(response?.data?.message)
        } catch (error) {
         console.log(error)

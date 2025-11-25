@@ -12,6 +12,7 @@ import SignUp from "./page/SignUp";
 import { useEffect } from "react";
 import axiosInstance from "./confiq/Axio";
 import {setLogin,setWishlist} from './Redux/AuthSlic'
+import { setCartTotal } from "./Redux/CartSlic";
 import TokenExpired from "./page/TokenExpired";
 import Wishlist from "./page/Wishlist";
 import Checkoutpage from "./page/Checkoutpage";
@@ -26,10 +27,12 @@ import Forgetpass from "./page/Forgetpas";
 
 const App = () => {
   const loading = useSelector((state) => state.loading.isLoading);
+  const cart=useSelector((state)=>state.cart.CartTotal)
   const dispatch=useDispatch()
   const isAuthenticate = useSelector((state) => state.auth.isAuthenticate);
   const navigate=useNavigate()
   console.log("isauthentication=",isAuthenticate)
+  console.log("cart amount=",cart)
   useEffect(()=>{
      if(!isAuthenticate){
        checkauth()
@@ -40,8 +43,12 @@ const App = () => {
       const response=await axiosInstance.get('/auth/checkauth')
       console.log("check auth=",response)
       dispatch(setLogin())
-      console.log("whislist items=",response?.data?.wishlist)
-      dispatch(setWishlist(response?.data?.wishlist))
+      console.log("whislist items= ",response?.data?.wishlist)
+      dispatch(setWishlist(response?.data?.wishlist))     
+      let cartData=response ?.data?.CartData[0]?.items  || []
+      console.log("cart data...",cartData)
+
+        dispatch(setCartTotal(cartData))
 
     } catch (error) {
       console.log("check auth=",error)
