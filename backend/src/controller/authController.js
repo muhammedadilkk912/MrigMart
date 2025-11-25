@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import sendMail from '../utils/nodemailer.js'
 import jwt from 'jsonwebtoken'
 import wishlistModel from '../model/wishlist.model.js'
+import cartModel from '../model/cart.model.js'
 
 const signup = async (req, res) => {
   console.log("sign in");
@@ -216,10 +217,12 @@ const checkauth=async(req,res)=>{
         wishlist.push(item.product);
       });
     }
+    let CartData=await cartModel.find({user:user.id})
 
     return res.status(200).json({
       message: "Authentication checking successful",
       wishlist,
+      CartData
     });
   } catch (error) {
     console.error("Error fetching wishlist:", error);

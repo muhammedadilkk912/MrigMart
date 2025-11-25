@@ -97,9 +97,12 @@ const addToCart=async(req,res)=>{
     console.log("ppp=",product)
   if (!product) return res.status(404).json({ message: 'Product not found' });
       // Find the user's cart in MongoDB
+   let itemQuantity=0;
   let cart = await cartModel.findOne({ user: userId });
+  itemQuantity=cart?.items?.length || 0
  
   console.log("checking cart =",cart)
+  
 
   if (cart) {
     // Check if the product is already in the cart
@@ -135,11 +138,15 @@ const addToCart=async(req,res)=>{
     });
     console.log(cart)
   }
+  console.log("cart itemsasjflsal...................")
   console.log("final cart before updating db=",cart)  
+  console.log("total cart items=",itemQuantity)
 
   // Save the cart
   await cart.save();
-  res.json({ message: 'Added to cart' });
+  let check_item=cart.items.includes(productId)
+  console.log("check item inside the cart=",check_item)
+  res.json({ message: 'Added to cart',cart:cart.items });
   } catch (error) {
     console.log( "error",error)
     return res.status(500).json({message:"internal server error"})
