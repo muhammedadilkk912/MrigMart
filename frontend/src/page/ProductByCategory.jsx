@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, /*useNavigate*/ } from "react-router-dom";
 import ProductCard from "../component/ProductCard";
 import FilterSidebar from "../component/FilterSidebar";
 import axiosInstance from "../confiq/Axio";
@@ -11,7 +11,7 @@ import Layout from "../component/Layout";
 const ProductByCategory = () => {
   const isFirstLoad = useRef(true);
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
@@ -246,7 +246,7 @@ const ProductByCategory = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-amber-200 text-center py-12">
+                    <div className="bg-gray-50 text-center py-12">
                       <h3 className="text-lg  font-medium text-gray-900 mb-2">
                         No products found
                       </h3>
